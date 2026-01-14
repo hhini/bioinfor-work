@@ -1,0 +1,465 @@
+---
+title: 多元数据分析作业
+authors:
+  - name: 周杰 113120230073
+    affiliation: The GanNan medical University 
+    roles: writing
+    corresponding: true
+bibliography: references.bib
+---
+
+选中的基因是 **CBS（cystathionine beta-synthase）**，这是一个非常重要的代谢基因，在 gnomAD v4.1.0 中的编号为 **ENSG00000160200**。下面是对它的功能、生物学意义和变异情况的分析：
+
+**Region**
+
+:   [21:43053191-43076943](https://gnomad.broadinstitute.org/region/21-43053191-43076943?dataset=gnomad_r4)
+
+### 🧬 基因功能与生物学角色
+
+-   **CBS** 编码一种酶，参与 **同型半胱氨酸（homocysteine）向半胱氨酸的转化**，这是甲硫氨酸代谢途径的一部分。
+
+-   该酶依赖 **维生素B6（吡哆醇）** 作为辅酶。
+
+-   功能缺失会导致 **高同型半胱氨酸血症（homocystinuria）**，一种代谢性疾病，可能引发血管、骨骼、眼睛和神经系统问题。
+
+### 🧪 gnomAD 中的变异情况
+
+CBS 基因在 gnomAD 中显示出大量变异，以下是一些关键点：
+
+#### 1. **ClinVar 收录的变异**
+
+-   共记录了 **1247 个 ClinVar 变异**，其中包括：
+
+    -   **致病或可能致病**（pathogenic/likely pathogenic）
+
+    -   **意义不明或有争议**（uncertain/conflicting）
+
+    -   **良性或可能良性**（benign/likely benign）
+
+#### 2. **功能缺失变异（pLoF）**
+
+-   多个 **frameshift 和错义变异** 被标记为可能导致功能缺失（pLoF），例如：
+
+    -   `p.Thr220AsnfsTer22`：移码突变，可能导致蛋白提前终止
+
+    -   `p.Asp124MetfsTer46`：频率较高，可能影响蛋白功能
+
+#### 3. **高频错义变异**
+
+-   `p.Ala221Thr`：等位基因频率高达 **8.5%**，但未标记为致病
+
+-   `p.His195Arg`：频率约 **7%**，ClinVar标注为良性
+
+### ⚠️ 数据注意事项
+
+-   CBS 基因在 GRCh38 参考基因组中存在 **假重复（false duplications）** 问题，可能导致变异调用不完整或不可靠。
+
+-   gnomAD 团队计划整合 **All of Us CMRG 数据集** 来改进这一问题。 检查数据
+
+```{python}
+import pandas as pd
+
+# 读取 gnomAD CSV
+df = pd.read_csv(r"E:\acode\homwwork\data\gnomAD_v4.1.0_ENSG00000160200_2025_10_21_16_17_28.csv")
+```
+
+查看数据并且转换我们需要的格式
+
+```{python}
+print(df.head())
+print(df.columns)
+```
+
+得到
+
+```         
+```python
+>>> print(df.head())
+... print(df.columns)
+                 gnomAD ID  ...  Hemizygote Count Remaining
+0         21-43055717-AG-A  ...                           0
+1          21-43055729-G-A  ...                           0
+2  21-43055734-GGGCCAGCT-G  ...                           0
+3         21-43055749-AT-A  ...                           0
+4          21-43055766-C-G  ...                           0
+
+[5 rows x 72 columns]
+Index(['gnomAD ID', 'Chromosome', 'Position', 'rsIDs', 'Reference', 'Alternate',
+       'Source', 'Filters - exomes', 'Filters - genomes', 'Transcript',
+       'HGVS Consequence', 'Protein Consequence', 'Transcript Consequence',
+       'VEP Annotation', 'ClinVar Germline Classification',
+       'ClinVar Variation ID', 'Flags', 'Allele Count', 'Allele Number',
+       'Allele Frequency', 'Homozygote Count', 'Hemizygote Count',
+       'Filters - joint', 'GroupMax FAF group', 'GroupMax FAF frequency', 'cadd',
+       'revel_max', 'spliceai_ds_max', 'pangolin_largest_ds', 'phylop',
+       'sift_max', 'polyphen_max', 'Allele Count African/African American',
+       'Allele Number African/African American',
+       'Homozygote Count African/African American',
+       'Hemizygote Count African/African American',
+       'Allele Count Admixed American', 'Allele Number Admixed American',
+       'Homozygote Count Admixed American', 'Hemizygote Count Admixed American',
+       'Allele Count Ashkenazi Jewish', 'Allele Number Ashkenazi Jewish',
+       'Homozygote Count Ashkenazi Jewish', 'Hemizygote Count Ashkenazi Jewish',
+       'Allele Count East Asian', 'Allele Number East Asian',
+       'Homozygote Count East Asian', 'Hemizygote Count East Asian',
+       'Allele Count European (Finnish)', 'Allele Number European (Finnish)',
+       'Homozygote Count European (Finnish)',
+       'Hemizygote Count European (Finnish)', 'Allele Count Middle Eastern',
+       'Allele Number Middle Eastern', 'Homozygote Count Middle Eastern',
+       'Hemizygote Count Middle Eastern', 'Allele Count European (non-Finnish)',
+       'Allele Number European (non-Finnish)',
+       'Homozygote Count European (non-Finnish)',
+       'Hemizygote Count European (non-Finnish)', 'Allele Count Amish',
+       'Allele Number Amish', 'Homozygote Count Amish', 'Hemizygote Count Amish',
+       'Allele Count South Asian', 'Allele Number South Asian',
+       'Homozygote Count South Asian', 'Hemizygote Count South Asian',
+       'Allele Count Remaining', 'Allele Number Remaining',
+       'Homozygote Count Remaining', 'Hemizygote Count Remaining'],
+      dtype='object')
+```
+
+要将 gnomAD 的 CSV 文件转换为 ANNOVAR 所需的 `.avinput` 格式，需要提取以下五列并进行适当处理：
+
+-   `Chromosome` → 转换为 `chr` 格式（例如 `21` → `chr5`）
+
+-   `Position` → 用作 `start` 和 `end`（单核苷酸变异）
+
+-   `Reference` → 原始碱基
+
+-   `Alternate` → 替代碱基
+
+### ✅ 示例 Python 脚本（适用于 SNV 和简单 indel）
+
+```{python}
+import pandas as pd
+
+# 读取 CSV 文件
+df = pd.read_csv(r"E:\acode\homwwork\data\gnomAD_v4.1.0_ENSG00000160200_2025_10_21_16_17_28.csv")
+
+# 构建 ANNOVAR 所需列
+def format_chr(chrom):
+    return f"chr{chrom}"
+
+def get_end(pos, ref):
+    return pos + len(ref) - 1
+
+annovar_df = pd.DataFrame({
+    'chr': df['Chromosome'].apply(format_chr),
+    'start': df['Position'],
+    'end': df.apply(lambda row: get_end(row['Position'], str(row['Reference'])), axis=1),
+    'ref': df['Reference'],
+    'alt': df['Alternate']
+})
+
+# 保存为 .avinput 文件
+annovar_df.to_csv(r"E:\acode\homwwork\data\gnomAD_CBS.avinput", sep='\t', index=False, header=False)
+```
+
+``` python
+annovar_df.to_csv(r"E:\acode\homwwork\data\gnomAD_COL18A1.avinput", sep='\t', index=False, header=False)
+>>>  print(annovar_df.head)
+<bound method NDFrame.head of        chr     start       end        ref  alt
+0    chr21  43055717  43055718         AG    A
+1    chr21  43055729  43055729          G    A
+2    chr21  43055734  43055742  GGGCCAGCT    G
+3    chr21  43055749  43055750         AT    A
+4    chr21  43055766  43055766          C    G
+..     ...       ...       ...        ...  ...
+193  chr21  43068645  43068645          G  GAA
+194  chr21  43068646  43068646          A    G
+195  chr21  43068657  43068657          A    G
+196  chr21  43068657  43068657          A    T
+197  chr21  43068659  43068659          A    T
+
+[198 rows x 5 columns]>
+```
+
+### ✅ 下载与准备数据库：快速检查清单
+
+| 数据库 | 文件数量 | 是否必须 | 用途 |
+|------------------|------------------|------------------|------------------|
+| **dbNSFP v4.2a** | 2（主文件 + 索引） | ✅ | 提供多个功能预测工具（SIFT、PolyPhen2、MetaSVM等） |
+| **ClinVar 20240611** | 2（主文件 + 索引） | ✅ | 致病性注释，用于筛选临床相关变异 |
+| **refGene** | 3（注释 + mRNA + 版本） | ✅ | 基因结构注释，用于定位变异位置 |
+
+### 🧠 实用建议与注意事项
+
+#### 1. **文件路径与权限**
+
+-   确保 `humandb/` 目录有写权限，避免 `annotate_variation.pl` 下载失败。
+
+-   下载后使用 `ls -lh` 检查文件大小是否完整（如 dbNSFP 应约 40GB）。
+
+#### 2. **解压顺序与命令**
+
+-   解压时建议逐个执行，避免系统卡顿：
+
+    bash
+
+    ```         
+    gunzip hg38_dbnsfp42a.txt.gz gunzip hg38_dbnsfp42a.txt.idx.gz 
+    ```
+
+#### 3. **版本匹配**
+
+-   确保你的 ANNOVAR 是最新版，支持 `dbnsfp42a` 和 `clinvar_20240611`。
+
+-   可运行 `./annotate_variation.pl -version` 检查版本。
+
+## 注释
+
+### ✅ 正确的 ANNOVAR 注释命令（用于 CBS）
+
+bash
+
+```         
+perl /mnt/e/acode/homwwork/data/annovar.latest/annovar/table_annovar.pl \
+  /mnt/e/acode/homwwork/data/gnomAD_CBS.avinput \
+  /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb/ \
+  -buildver hg38 \
+  -out /mnt/e/acode/homwwork/data/gnomAD_CBS_anno \
+  -remove \
+  -protocol refGene,dbnsfp42a,clinvar_20240611 \
+  -operation g,f,f \
+  -nastring . \
+  -polish \
+  -xref /mnt/e/acode/homwwork/data/annovar.latest/annovar/example/gene_fullxref.txt
+```
+
+### 🧪 注释结果说明
+
+运行成功后，得到`gnomAD_CBS_anno.hg38_multianno.txt`
+
+``` bash
+jayz@localhost:/mnt/e/acode/homwwork/data$ perl /mnt/e/acode/homwwork/data/annovar.latest/annovar/table_annovar.pl \
+  /mnt/e/acode/homwwork/data/gnomAD_CBS.avinput \
+  /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb/ \
+  -buildver hg38 \
+  -out /mnt/e/acode/homwwork/data/gnomAD_CBS_anno \
+  -remove \
+  -protocol refGene,dbnsfp42a,clinvar_20240611 \
+  -operation g,f,f \
+  -nastring . \
+  -polish \
+  -xref /mnt/e/acode/homwwork/data/annovar.latest/annovar/example/gene_fullxref.txt
+-----------------------------------------------------------------
+NOTICE: Processing operation=g protocol=refGene
+
+NOTICE: Running with system command <annotate_variation.pl -geneanno -buildver hg38 -dbtype refGene -outfile /mnt/e/acode/homwwork/data/gnomAD_CBS_anno.refGene -exonsort -nofirstcodondel /mnt/e/acode/homwwork/data/gnomAD_CBS.avinput /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb/>
+NOTICE: Output files are written to /mnt/e/acode/homwwork/data/gnomAD_CBS_anno.refGene.variant_function, /mnt/e/acode/homwwork/data/gnomAD_CBS_anno.refGene.exonic_variant_function     
+NOTICE: Reading gene annotation from /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb/hg38_refGene.txt ... Done with 88819 transcripts (including 21511 without coding sequence annotation) for 28307 unique genes
+NOTICE: Processing next batch with 198 unique variants in 198 input lines
+NOTICE: Reading FASTA sequences from /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb/hg38_refGeneMrna.fa ... Done with 14 sequences
+WARNING: A total of 606 sequences will be ignored due to lack of correct ORF annotation     
+
+NOTICE: Running with system command <coding_change.pl  /mnt/e/acode/homwwork/data/gnomAD_CBS_anno.refGene.exonic_variant_function.orig /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb//hg38_refGene.txt /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb//hg38_refGeneMrna.fa -alltranscript -out /mnt/e/acode/homwwork/data/gnomAD_CBS_anno.refGene.fa -newevf /mnt/e/acode/homwwork/data/gnomAD_CBS_anno.refGene.exonic_variant_function>
+-----------------------------------------------------------------
+NOTICE: Processing operation=f protocol=dbnsfp42a
+NOTICE: Finished reading 107 column headers for '-dbtype dbnsfp42a'
+
+NOTICE: Running system command <annotate_variation.pl -filter -dbtype dbnsfp42a -buildver hg38 -outfile /mnt/e/acode/homwwork/data/gnomAD_CBS_anno /mnt/e/acode/homwwork/data/gnomAD_CBS.avinput /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb/ -otherinfo>
+NOTICE: Output file with variants matching filtering criteria is written to /mnt/e/acode/homwwork/data/gnomAD_CBS_anno.hg38_dbnsfp42a_dropped, and output file with other variants is written to /mnt/e/acode/homwwork/data/gnomAD_CBS_anno.hg38_dbnsfp42a_filtered
+NOTICE: Processing next batch with 198 unique variants in 198 input lines
+NOTICE: Database index loaded. Total number of bins is 556674 and the number of bins to be scanned is 16
+NOTICE: Scanning filter database /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb/hg38_dbnsfp42a.txt...Done
+-----------------------------------------------------------------
+NOTICE: Processing operation=f protocol=clinvar_20240611
+NOTICE: Finished reading 5 column headers for '-dbtype clinvar_20240611'
+
+NOTICE: Running system command <annotate_variation.pl -filter -dbtype clinvar_20240611 -buildver hg38 -outfile /mnt/e/acode/homwwork/data/gnomAD_CBS_anno /mnt/e/acode/homwwork/data/gnomAD_CBS.avinput /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb/ -otherinfo>      
+NOTICE: the --dbtype clinvar_20240611 is assumed to be in generic ANNOVAR database format
+NOTICE: Output file with variants matching filtering criteria is written to /mnt/e/acode/homwwork/data/gnomAD_CBS_anno.hg38_clinvar_20240611_dropped, and output file with other variants is written to /mnt/e/acode/homwwork/data/gnomAD_CBS_anno.hg38_clinvar_20240611_filtered   
+NOTICE: Processing next batch with 198 unique variants in 198 input lines
+NOTICE: Database index loaded. Total number of bins is 171655 and the number of bins to be scanned is 8
+NOTICE: Scanning filter database /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb/hg38_clinvar_20240611.txt...Done
+-----------------------------------------------------------------
+NOTICE: Multianno output file is written to /mnt/e/acode/homwwork/data/gnomAD_CBS_anno.hg38_multianno.txt
+```
+
+查看文件
+
+``` bash
+jayz@localhost:/mnt/e/acode/homwwork/data$ head gnomAD_CBS_anno.hg38_multianno.txt
+Chr     Start   End     Ref     Alt     Func.refGene    Gene.refGene    GeneDetail.refGene ExonicFunc.refGene       AAChange.refGene        SIFT_score      SIFT_converted_rankscore   SIFT_pred        SIFT4G_score    SIFT4G_converted_rankscore      SIFT4G_pred     Polyphen2_HDIV_score        Polyphen2_HDIV_rankscore        Polyphen2_HDIV_pred     Polyphen2_HVAR_scorePolyphen2_HVAR_rankscore        Polyphen2_HVAR_pred     LRT_score       LRT_converted_rankscore     LRT_pred        MutationTaster_score    MutationTaster_converted_rankscore      MutationTaster_pred MutationAssessor_score  MutationAssessor_rankscore      MutationAssessor_pred       FATHMM_score    FATHMM_converted_rankscore      FATHMM_pred     PROVEAN_score   PROVEAN_converted_rankscore PROVEAN_pred    VEST4_score     VEST4_rankscore MetaSVM_score   MetaSVM_rankscore   MetaSVM_pred    MetaLR_score    MetaLR_rankscore        MetaLR_pred     MetaRNN_score       MetaRNN_rankscore       MetaRNN_pred    M-CAP_score     M-CAP_rankscore M-CAP_pred  REVEL_score     REVEL_rankscore MutPred_score   MutPred_rankscore       MVP_score  MVP_rankscore    MPC_score       MPC_rankscore   PrimateAI_score PrimateAI_rankscore     PrimateAI_pred      DEOGEN2_score   DEOGEN2_rankscore       DEOGEN2_pred    BayesDel_addAF_scoreBayesDel_addAF_rankscore        BayesDel_addAF_pred     BayesDel_noAF_score     BayesDel_noAF_rankscore     BayesDel_noAF_pred      ClinPred_score  ClinPred_rankscore      ClinPred_pred       LIST-S2_score   LIST-S2_rankscore       LIST-S2_pred    Aloft_pred      Aloft_Confidence    CADD_raw        CADD_raw_rankscore      CADD_phred      DANN_score      DANN_rankscore      fathmm-MKL_coding_score fathmm-MKL_coding_rankscore     fathmm-MKL_coding_pred  fathmm-XF_coding_score      fathmm-XF_coding_rankscore      fathmm-XF_coding_pred   Eigen-raw_coding    Eigen-raw_coding_rankscore      Eigen-PC-raw_coding     Eigen-PC-raw_coding_rankscore       GenoCanyon_score        GenoCanyon_rankscore    integrated_fitCons_score        integrated_fitCons_rankscore        integrated_confidence_value     LINSIGHT        LINSIGHT_rankscore  GERP++_NR       GERP++_RS       GERP++_RS_rankscore     phyloP100way_vertebrate phyloP100way_vertebrate_rankscore   phyloP30way_mammalian   phyloP30way_mammalian_rankscore phastCons100way_vertebrate  phastCons100way_vertebrate_rankscore    phastCons30way_mammalian   phastCons30way_mammalian_rankscore       SiPhy_29way_logOdds     SiPhy_29way_logOdds_rankscore       Interpro_domain GTEx_V8_gene    GTEx_V8_tissue  CLNALLELEID     CLNDN   CLNDISDB   CLNREVSTAT       CLNSIG
+chr21   43055717        43055718        AG      A       intronic        CBS,CBSL        .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .
+chr21   43055729        43055729        G       A       intronic        CBS,CBSL        .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .
+chr21   43055734        43055742        GGGCCAGCT       G       intronic        CBS,CBSL   ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .
+chr21   43055749        43055750        AT      A       intronic        CBS,CBSL        .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .
+chr21   43055766        43055766        C       G       intronic        CBS,CBSL        .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .
+chr21   43055766        43055766        C       T       intronic        CBS,CBSL        .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .
+chr21   43055768        43055768        G       GT      intronic        CBS,CBSL        .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .
+chr21   43055772        43055772        C       T       intronic        CBS,CBSL        .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .
+chr21   43055779        43055780        GT      G       intronic        CBS,CBSL        .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .
+```
+
+看一下有几列，并且名字是什么
+
+``` bash
+jayz@localhost:/mnt/e/acode/homwwork/data$ head -n 1 gnomAD_CBS_anno.hg38_multianno.txt | tr
+ '\t' '\n' | nl
+     1  Chr
+     2  Start
+     3  End
+     4  Ref
+     5  Alt
+     6  Func.refGene
+     7  Gene.refGene
+     8  GeneDetail.refGene
+     9  ExonicFunc.refGene
+    10  AAChange.refGene
+    11  SIFT_score
+    12  SIFT_converted_rankscore
+    13  SIFT_pred
+    14  SIFT4G_score
+    15  SIFT4G_converted_rankscore
+    16  SIFT4G_pred
+    17  Polyphen2_HDIV_score
+    18  Polyphen2_HDIV_rankscore
+    19  Polyphen2_HDIV_pred
+    20  Polyphen2_HVAR_score
+    21  Polyphen2_HVAR_rankscore
+    22  Polyphen2_HVAR_pred
+    23  LRT_score
+    24  LRT_converted_rankscore
+    25  LRT_pred
+    26  MutationTaster_score
+    27  MutationTaster_converted_rankscore
+    28  MutationTaster_pred
+    29  MutationAssessor_score
+    30  MutationAssessor_rankscore
+    31  MutationAssessor_pred
+    32  FATHMM_score
+    33  FATHMM_converted_rankscore
+    34  FATHMM_pred
+    35  PROVEAN_score
+    36  PROVEAN_converted_rankscore
+    37  PROVEAN_pred
+    38  VEST4_score
+    39  VEST4_rankscore
+    40  MetaSVM_score
+    41  MetaSVM_rankscore
+    42  MetaSVM_pred
+    43  MetaLR_score
+    44  MetaLR_rankscore
+    45  MetaLR_pred
+    46  MetaRNN_score
+    47  MetaRNN_rankscore
+    48  MetaRNN_pred
+    49  M-CAP_score
+    50  M-CAP_rankscore
+    51  M-CAP_pred
+    52  REVEL_score
+    53  REVEL_rankscore
+    54  MutPred_score
+    55  MutPred_rankscore
+    56  MVP_score
+    57  MVP_rankscore
+    58  MPC_score
+    59  MPC_rankscore
+    60  PrimateAI_score
+    61  PrimateAI_rankscore
+    62  PrimateAI_pred
+    63  DEOGEN2_score
+    64  DEOGEN2_rankscore
+    65  DEOGEN2_pred
+    66  BayesDel_addAF_score
+    67  BayesDel_addAF_rankscore
+    68  BayesDel_addAF_pred
+    69  BayesDel_noAF_score
+    70  BayesDel_noAF_rankscore
+    71  BayesDel_noAF_pred
+    72  ClinPred_score
+    73  ClinPred_rankscore
+    74  ClinPred_pred
+    75  LIST-S2_score
+    76  LIST-S2_rankscore
+    77  LIST-S2_pred
+    78  Aloft_pred
+    79  Aloft_Confidence
+    80  CADD_raw
+    81  CADD_raw_rankscore
+    82  CADD_phred
+    83  DANN_score
+    84  DANN_rankscore
+    85  fathmm-MKL_coding_score
+    86  fathmm-MKL_coding_rankscore
+    87  fathmm-MKL_coding_pred
+    88  fathmm-XF_coding_score
+    89  fathmm-XF_coding_rankscore
+    90  fathmm-XF_coding_pred
+    91  Eigen-raw_coding
+    92  Eigen-raw_coding_rankscore
+    93  Eigen-PC-raw_coding
+    94  Eigen-PC-raw_coding_rankscore
+    95  GenoCanyon_score
+    96  GenoCanyon_rankscore
+    97  integrated_fitCons_score
+    98  integrated_fitCons_rankscore
+    99  integrated_confidence_value
+   100  LINSIGHT
+   101  LINSIGHT_rankscore
+   102  GERP++_NR
+   103  GERP++_RS
+   104  GERP++_RS_rankscore
+   105  phyloP100way_vertebrate
+   106  phyloP100way_vertebrate_rankscore
+   107  phyloP30way_mammalian
+   108  phyloP30way_mammalian_rankscore
+   109  phastCons100way_vertebrate
+   110  phastCons100way_vertebrate_rankscore
+   111  phastCons30way_mammalian
+   112  phastCons30way_mammalian_rankscore
+   113  SiPhy_29way_logOdds
+   114  SiPhy_29way_logOdds_rankscore
+   115  Interpro_domain
+   116  GTEx_V8_gene
+   117  GTEx_V8_tissue
+   118  CLNALLELEID
+   119  CLNDN
+   120  CLNDISDB
+   121  CLNREVSTAT
+   122  CLNSIG
+```
+
+### 🧬 文件结构解析（前几列）
+
+| 列名 | 含义 |
+|------------------------------------|------------------------------------|
+| `Chr`, `Start`, `End`, `Ref`, `Alt` | 变异的基本信息 |
+| `Func.refGene` | 变异所在区域（如 exonic, intronic, UTR） |
+| `Gene.refGene` | 受影响的基因（CBS, CBSL） |
+| `ExonicFunc.refGene` | 若为外显子变异，具体类型（missense, frameshift 等） |
+| `AAChange.refGene` | 氨基酸变化（如 p.Ala221Thr） |
+
+### 🧪 致病性预测字段（部分）
+
+你可以重点关注以下字段来筛选潜在致病变异：
+
+| 工具 | 字段 | 预测值 |
+|------------------------|------------------------|------------------------|
+| **SIFT** | `SIFT_pred` | `D` 表示有害（Damaging） |
+| **PolyPhen2** | `Polyphen2_HDIV_pred`, `Polyphen2_HVAR_pred` | `D` 表示可能有害 |
+| **MutationTaster** | `MutationTaster_pred` | `A`（disease causing automatic）或 `D`（disease causing） |
+| **MetaSVM / MetaLR / MetaRNN** | `MetaSVM_pred`, `MetaLR_pred`, `MetaRNN_pred` | `D` 表示有害 |
+| **ClinVar** | `CLNSIG` | 包含 `Pathogenic`, `Likely_pathogenic` 等关键词 |
+
+### ✅ 正确的 LoF 筛选命令（用于 CBS）
+
+bash
+
+```         
+awk -F'\t' '$9 ~ /stopgain|frameshift_deletion|frameshift_insertion|splicing|stoploss|startloss/' gnomAD_CBS_anno.hg38_multianno.txt > CBS_LOF.txt 
+```
+
+### 📁 输出文件说明：`CBS_LOF.txt`
+
+这个文件将包含所有在 `ExonicFunc.refGene` 字段中标记为 LoF 类型的变异
+
+```         
+jayz@localhost:/mnt/e/acode/homwwork/data$ ls -lh CBS_LOF.txt
+-rwxrwxrwx 1 jayz jayz 0 Oct 21 16:50 CBS_LOF.txt
+```
+
+说明在 CBS 的变异中没有任何变异被标注为 LoF 类型（即 `stopgain`、`frameshift_deletion` 等）
+
+\`\`\`bash

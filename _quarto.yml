@@ -1,0 +1,19 @@
+project:
+  type: default
+
+format:
+  docx:
+    toc: true
+    number-sections: true
+    highlight-style: tango   # 代码高亮样式
+    df-print: paged          # 表格分页显示
+    
+
+
+
+execute:
+  echo: true
+  warning: false
+  message: false
+
+

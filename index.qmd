@@ -1,0 +1,120 @@
+---
+title: 基因组学作业
+authors:
+  - name: 周杰 113120230073
+    affiliation: The GanNan medical University 
+    roles: writing
+    corresponding: true
+bibliography: references.bib
+---
+
+## 1️⃣ EGFR 基因背景
+
+-   **EGFR (Epidermal Growth Factor Receptor)** 是一个典型的 **跨膜受体酪氨酸激酶**，属于 ERBB 家族。
+
+-   它有 **胞外配体结合区**、**单一跨膜螺旋区**、以及 **胞内的激酶结构域**。
+
+-   在癌症（尤其是非小细胞肺癌）中，EGFR 的突变或扩增常导致异常信号传导和细胞过度增殖。
+
+## 📊 EMBOSS结果解读
+
+在多个 EGFR 转录本中，CpGPlot 都检测到 **47..369 或 47..469 区间**的 CpG 岛：
+
+-   **长度**：约 323–423 bp
+
+-   **GC 含量**：\>50%
+
+-   **CpG O/E 比值**：\>0.6
+
+-   **位置**：靠近转录起始区（promoter 区域）
+
+### 生物学意义
+
+-   CpG 岛通常位于 **基因启动子**，与转录调控密切相关。
+
+-   在 EGFR 中，这个 CpG 岛可能影响基因的 **甲基化状态**：
+
+    -   **高甲基化** → 启动子沉默，EGFR 表达下调
+
+    -   **低甲基化/去甲基化** → 启动子活跃，EGFR 表达增强
+
+-   在癌症研究里，EGFR 的 CpG 岛甲基化状态常被用作 **表观遗传学标志物**。
+
+![](images/cpgplot.3.png)
+
+```         
+FH   Key             Location/Qualifiers FH FT   misc_feature    47..369 FH   Key             Location/Qualifiers FH FT   misc_feature    47..369 FH   Key             Location/Qualifiers FH FT   misc_feature    47..369 FH   Key             Location/Qualifiers FH FH   Key             Location/Qualifiers FH FT   misc_feature    47..469 FH   Key             Location/Qualifiers FH FT   misc_feature    47..369 FH   Key             Location/Qualifiers FH FT   misc_feature    47..369 FH   Key             Location/Qualifiers FH FT   misc_feature    47..369 FH   Key             Location/Qualifiers FH FT   misc_feature    47..369 FH   Key             Location/Qualifiers FH FH   Key             Location/Qualifiers FH FH   Key             Location/Qualifiers FH FH   Key             Location/Qualifiers
+```
+
+## 🧬 结果概览
+
+-   **NP_001333826.1 / NP_001333827.1**
+
+    -   长度：1091 / 1136 aa
+
+    -   **预测跨膜螺旋数：1**
+
+    -   跨膜区：大约在 **601–623 / 646–668**
+
+    -   结构：N 端在细胞外，C 端在细胞内
+
+    -   👉 这是 EGFR 的典型结构：一个跨膜螺旋，外部配体结合区 + 内部激酶区。
+
+-   **NP_001333828.1 / NP_001333829.1 / NP_005219.2 等**
+
+    -   长度：1157–1210 aa
+
+    -   **预测跨膜螺旋数：2**
+
+    -   跨膜区：大约在 **601–623 + 728–750**（或类似位置）
+
+    -   👉 这可能是由于 **不同转录本或剪接变体**，导致 TMHMM 预测到额外的疏水段。通常 EGFR 只有一个跨膜区，但某些 isoform 的序列特征会让算法误判第二个短疏水段。
+
+-   **NP_958439.1 / NP_958440.1 / NP_958441.1**
+
+    -   长度：405–705 aa
+
+    -   **预测跨膜螺旋数：0**
+
+    -   👉 这些是 **截短型 isoform**，缺少跨膜区，可能是胞外可溶性形式（soluble EGFR），在某些情况下会作为“诱饵受体”存在。
+
+## 🔑 关键解读
+
+1.  **主流 EGFR isoform**（如 NP_001333826.1） → 只有 **一个跨膜螺旋**，这是经典的受体酪氨酸激酶结构。
+
+2.  **部分变体**预测到 **两个跨膜区**，但这通常是算法对疏水段的“过预测”，不代表真实存在两个跨膜螺旋。
+
+3.  **截短型 isoform**没有跨膜区，可能定位在胞外，参与调控或作为竞争性结合蛋白。
+
+## 🧩 生物学意义
+
+-   **单跨膜结构** → 确认 EGFR 是典型的膜受体，胞外结合 EGF，胞内激酶区传递信号。
+
+-   **可溶性 isoform** → 在肿瘤学研究中有意义，因为它们可能调节 EGFR 信号强度。
+
+-   **预测到两个跨膜区的 isoform** → 需要结合实验或数据库注释确认，通常不是真实的双跨膜蛋白。
+
+![](images/NP_001333828.1.gif)
+
+```         
+# NP_001333828.1 Length: 1165
+# NP_001333828.1 Number of predicted TMHs:  2
+# NP_001333828.1 Exp number of AAs in TMHs: 42.2935700000001
+# NP_001333828.1 Exp number, first 60 AAs:  0.89361
+# NP_001333828.1 Total prob of N-in:        0.04689
+NP_001333828.1  TMHMM2.0    outside      1   600
+NP_001333828.1  TMHMM2.0    TMhelix    601   623
+NP_001333828.1  TMHMM2.0    inside     624   727
+NP_001333828.1  TMHMM2.0    TMhelix    728   750
+NP_001333828.1  TMHMM2.0    outside    751  1165
+
+# NP_001333828.1 长度：1165
+# NP_001333828.1 预测的 TMH 数量：2
+# NP_001333828.1 TMH 中 AA 的 Exp 数量：42.2935700000001
+# NP_001333828.1 实验数，前 60 个 AA：0.89361
+# NP_001333828.1 N-in 总概率：0.04689
+NP_001333828.1 TMHMM2.0 外部 1 600
+NP_001333828.1 TMHMM2.0 TMhelix 601 623
+NP_001333828.1 TMHMM2.0 内部 624 727
+NP_001333828.1 TMHMM2.0 TMhelix 728 750
+```

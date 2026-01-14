@@ -1,0 +1,1 @@
+{"entries":[],"headings":["多元数据分析作业","tcga-lusc-项目数据简报","项目基本信息","数据类型与可用性","第一步载入数据","临床数据clinical_data","表达数据final_data-或-expr_df","使用-impute.knn-进行-knn-插补","安装并载入包","插补表达矩阵","参数说明可调节","第二步移除含-na-的基因行","基于-wgcna-模块-eigengenes-对样本聚类","方法一主成分分析pca","三无监督聚类的两种常用方法","直接跳过wgcnawgcna"]}

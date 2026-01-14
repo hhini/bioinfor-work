@@ -1,0 +1,372 @@
+---
+authors:
+  - name: 周杰 113120230073
+    affiliation: The GanNan medical University 
+    roles: writing
+    corresponding: true
+bibliography: references.bib
+---
+
+
+## n4 打印1~1000之间包含3的数字
+
+编程实现：打印出1~1000之间包含3的数字。如果3是连在一起的（如233）则在数字前加上&；如果这个数字是质数则在数字后加上*。
+
+```{python}
+#| echo: true
+
+import math
+
+def is_prime(n):
+    """判断一个数是否为质数"""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    # 只需要检查到sqrt(n)
+    for i in range(3, int(math.sqrt(n)) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+def has_consecutive_threes(n):
+    """判断数字是否包含连续的3"""
+    num_str = str(n)
+    return '33' in num_str
+
+def contains_three(n):
+    """判断数字是否包含3"""
+    return '3' in str(n)
+
+def format_number(n):
+    """格式化数字，添加相应的标记"""
+    result = str(n)
+    
+    # 检查是否包含连续的3
+    if has_consecutive_threes(n):
+        result = '&' + result
+    
+    # 检查是否为质数
+    if is_prime(n):
+        result = result + '*'
+    
+    return result
+
+# 主程序：打印1~1000之间包含3的数字
+print("1~1000之间包含3的数字：")
+print("说明：&表示包含连续3，*表示质数")
+print("-" * 50)
+
+count = 0
+for i in range(1, 1001):
+    if contains_three(i):
+        formatted = format_number(i)
+        print(f"{formatted:>6}", end=" ")
+        count += 1
+        # 每行显示10个数字
+        if count % 10 == 0:
+            print()
+
+print(f"\n\n总共找到 {count} 个包含3的数字")
+
+# 统计信息
+consecutive_count = 0
+prime_count = 0
+both_count = 0
+
+for i in range(1, 1001):
+    if contains_three(i):
+        has_consecutive = has_consecutive_threes(i)
+        is_prime_num = is_prime(i)
+        
+        if has_consecutive:
+            consecutive_count += 1
+        if is_prime_num:
+            prime_count += 1
+        if has_consecutive and is_prime_num:
+            both_count += 1
+
+print(f"\n统计信息：")
+print(f"包含连续3的数字：{consecutive_count} 个")
+print(f"质数：{prime_count} 个")
+print(f"既是质数又包含连续3：{both_count} 个")
+```
+
+**代码讲解：**
+
+1. **质数判断函数 `is_prime(n)`**：
+   - 小于2的数不是质数
+   - 2是唯一的偶质数
+   - 其他偶数都不是质数
+   - 对于奇数，只需要检查到√n即可
+
+2. **连续3检测函数 `has_consecutive_threes(n)`**：
+   - 将数字转换为字符串
+   - 检查是否包含'33'子串
+
+3. **包含3检测函数 `contains_three(n)`**：
+   - 将数字转换为字符串
+   - 检查是否包含'3'字符
+
+4. **格式化函数 `format_number(n)`**：
+   - 先检查连续3，如果是则在前面加'&'
+   - 再检查质数，如果是则在后面加'*'
+
+5. **主程序**：
+   - 遍历1~1000的所有数字
+   - 筛选出包含3的数字
+   - 按格式要求输出
+   - 提供统计信息
+
+## n5 求所有四位回文数
+
+"回文数"是一种特殊数字，就是说一个数字从左边读和从右边读的结果是一模一样的。
+
+```{python}
+#| echo: true
+
+def is_palindrome(n):
+    """判断一个数是否为回文数"""
+    num_str = str(n)
+    return num_str == num_str[::-1]
+
+def find_four_digit_palindromes():
+    """找出所有四位回文数"""
+    palindromes = []
+    for i in range(1000, 10000):  # 四位数的范围是1000-9999
+        if is_palindrome(i):
+            palindromes.append(i)
+    return palindromes
+
+# 找出所有四位回文数
+four_digit_palindromes = find_four_digit_palindromes()
+
+print("所有四位回文数：")
+print("-" * 30)
+
+# 按行显示，每行10个
+for i, num in enumerate(four_digit_palindromes, 1):
+    print(f"{num:>6}", end=" ")
+    if i % 10 == 0:
+        print()
+
+print(f"\n\n总共找到 {len(four_digit_palindromes)} 个四位回文数")
+
+# 验证几个例子
+print("\n验证示例：")
+examples = [1221, 1331, 1441, 1551]
+for num in examples:
+    print(f"{num} 是回文数：{is_palindrome(num)}")
+
+# 分析回文数的特点
+print("\n回文数特点分析：")
+print("四位回文数的形式为：abba")
+print("其中a是千位和个位数字，b是百位和十位数字")
+print("a的取值范围：1-9（不能为0，否则不是四位数）")
+print("b的取值范围：0-9")
+print("因此四位回文数共有：9 × 10 = 90 个")
+```
+
+**代码讲解：**
+
+1. **回文数判断函数 `is_palindrome(n)`**：
+   - 将数字转换为字符串
+   - 使用切片`[::-1]`反转字符串
+   - 比较原字符串和反转后的字符串是否相等
+
+2. **查找四位回文数函数 `find_four_digit_palindromes()`**：
+   - 遍历1000到9999的所有四位数
+   - 对每个数调用回文数判断函数
+   - 收集所有回文数到列表中
+
+3. **数学分析**：
+   - 四位回文数的形式为abba
+   - 千位数字a：1-9（9种选择）
+   - 百位数字b：0-9（10种选择）
+   - 十位数字：必须等于百位数字b
+   - 个位数字：必须等于千位数字a
+   - 总数：9 × 10 = 90个
+
+## n6 模拟打印超市购物小票升级版
+
+输入商品名称、价格、数量，算出应付金额。用户输入整钱，实现找零和抹零的功能，最后打印购物小票。
+
+```{python}
+#| echo: true
+
+import datetime
+
+class ShoppingCart:
+    """购物车类"""
+    def __init__(self):
+        self.items = []  # 存储商品信息
+    
+    def add_item(self, name, price, quantity):
+        """添加商品到购物车"""
+        self.items.append({
+            'name': name,
+            'price': price,
+            'quantity': quantity,
+            'subtotal': price * quantity
+        })
+    
+    def calculate_total(self):
+        """计算总金额"""
+        return sum(item['subtotal'] for item in self.items)
+    
+    def print_receipt(self, paid_amount):
+        """打印购物小票"""
+        total = self.calculate_total()
+        change = paid_amount - total
+        
+        print("=" * 50)
+        print("           欢迎光临超市")
+        print("=" * 50)
+        print(f"购物时间：{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print("-" * 50)
+        print(f"{'商品名称':<15} {'单价':<8} {'数量':<6} {'小计':<10}")
+        print("-" * 50)
+        
+        for item in self.items:
+            print(f"{item['name']:<15} {item['price']:<8.2f} {item['quantity']:<6} {item['subtotal']:<10.2f}")
+        
+        print("-" * 50)
+        print(f"{'应付金额：':<30} {total:.2f} 元")
+        print(f"{'实付金额：':<30} {paid_amount:.2f} 元")
+        
+        if change > 0:
+            print(f"{'找零：':<30} {change:.2f} 元")
+        elif change < 0:
+            print(f"{'还需支付：':<30} {abs(change):.2f} 元")
+        else:
+            print(f"{'找零：':<30} 0.00 元")
+        
+        print("=" * 50)
+        print("谢谢惠顾，欢迎下次光临！")
+        print("=" * 50)
+
+def round_down(amount):
+    """抹零功能：向下取整到角"""
+    return int(amount * 10) / 10
+
+def main():
+    """主程序"""
+    cart = ShoppingCart()
+    
+    print("=== 超市购物系统 ===")
+    print("请输入商品信息（输入空商品名结束）")
+    
+    # 添加商品
+    while True:
+        name = input("商品名称：").strip()
+        if not name:
+            break
+        
+        try:
+            price = float(input("单价（元）："))
+            quantity = int(input("数量："))
+            
+            if price < 0 or quantity <= 0:
+                print("价格不能为负数，数量必须大于0！")
+                continue
+                
+            cart.add_item(name, price, quantity)
+            print(f"已添加：{name} × {quantity} = {price * quantity:.2f} 元")
+            
+        except ValueError:
+            print("输入格式错误，请重新输入！")
+            continue
+    
+    if not cart.items:
+        print("购物车为空，程序结束。")
+        return
+    
+    # 计算总金额
+    total = cart.calculate_total()
+    print(f"\n购物车总金额：{total:.2f} 元")
+    
+    # 抹零功能
+    use_round_down = input("是否使用抹零功能？(y/n): ").strip().lower() == 'y'
+    if use_round_down:
+        total = round_down(total)
+        print(f"抹零后金额：{total:.2f} 元")
+    
+    # 支付
+    while True:
+        try:
+            paid = float(input(f"请输入支付金额（至少 {total:.2f} 元）："))
+            if paid >= total:
+                break
+            else:
+                print("支付金额不足！")
+        except ValueError:
+            print("请输入有效的数字！")
+    
+    # 打印小票
+    cart.print_receipt(paid)
+
+# 演示模式（非交互式）
+def demo_mode():
+    """演示模式，自动添加商品并打印小票"""
+    print("=== 演示模式 ===")
+    cart = ShoppingCart()
+    
+    # 添加示例商品
+    cart.add_item("苹果", 5.8, 3)
+    cart.add_item("牛奶", 12.5, 2)
+    cart.add_item("面包", 8.9, 1)
+    cart.add_item("鸡蛋", 6.2, 2)
+    
+    total = cart.calculate_total()
+    print(f"购物车总金额：{total:.2f} 元")
+    
+    # 演示抹零功能
+    total_rounded = round_down(total)
+    print(f"抹零后金额：{total_rounded:.2f} 元")
+    
+    # 模拟支付
+    paid_amount = 50.0
+    print(f"支付金额：{paid_amount:.2f} 元")
+    
+    # 打印小票
+    cart.print_receipt(paid_amount)
+
+# 运行演示
+if __name__ == "__main__":
+    demo_mode()
+```
+
+**代码讲解：**
+
+1. **ShoppingCart类**：
+   - `__init__()`: 初始化空购物车
+   - `add_item()`: 添加商品，计算小计
+   - `calculate_total()`: 计算总金额
+   - `print_receipt()`: 格式化打印购物小票
+
+2. **抹零功能 `round_down()`**：
+   - 将金额向下取整到角（0.1元）
+   - 例如：12.67元 → 12.6元
+
+3. **主程序功能**：
+   - 循环输入商品信息
+   - 数据验证（价格非负，数量为正）
+   - 计算总金额
+   - 可选择抹零功能
+   - 支付金额验证
+   - 打印格式化的购物小票
+
+4. **小票格式**：
+   - 包含超市名称、购物时间
+   - 商品列表（名称、单价、数量、小计）
+   - 应付金额、实付金额、找零
+   - 美观的边框和分隔线
+
+5. **演示模式**：
+   - 自动添加示例商品
+   - 展示抹零功能
+   - 模拟支付过程
+   - 打印完整小票
+

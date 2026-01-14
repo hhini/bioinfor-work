@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.24">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>医疗大数据作业</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="gwas_files/libs/clipboard/clipboard.min.js"></script>
+<script src="gwas_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="gwas_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="gwas_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="gwas_files/libs/quarto-html/popper.min.js"></script>
+<script src="gwas_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="gwas_files/libs/quarto-html/anchor.min.js"></script>
+<link href="gwas_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="gwas_files/libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="gwas_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="gwas_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="gwas_files/libs/bootstrap/bootstrap-9e3ffae467580fdb927a41352e75a2e0.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="gwas.docx"><i class="bi bi-file-word"></i>MS Word</a></li></ul></div></div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">医疗大数据作业</h1>
+</div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">周杰 113120230073 </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            The GanNan medical University
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><strong>113120230073周杰</strong></p>
+<p>STILL MADE BY JAYZ</p>
+<hr>
+<section id="关键事实用于本实验" class="level1">
+<h1>关键事实（用于本实验）</h1>
+<ul>
+<li><p>基因：<strong>AMACR (alpha-methylacyl-CoA racemase)</strong>。Ensembl / NCBI 显示 AMACR 在 <strong>染色体 5 的位置 (GRCh38)</strong>，坐标大致为 <strong>chr5:33,986,165–34,008,050（互补链）</strong>（不同资源略有 ± 几十碱基的差别，下面采用 NCBI / Ensembl 报告的 GRCh38 坐标作为本实验区域）。(<a href="https://www.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000242110&amp;utm_source=chatgpt.com" title="Gene: AMACR (ENSG00000242110) - Summary">Ensembl</a>)</p></li>
+<li><p>我们将按指定的 <strong>LoF 定义</strong>：<code>start_lost</code>、<code>stopgain</code>（stop_gained）、<code>splice_donor</code>、<code>splice_acceptor</code>、<code>frameshift</code>（frameshift indel）。</p></li>
+<li><p>错义（missense）致病性预测：使用 ANNOVAR 调用 <strong>dbNSFP</strong> 中的 <code>SIFT</code>、<code>PolyPhen-2 HVar</code>、<code>MutationAssessor</code>、<code>MetaSVM</code>。你要求“<strong>100% 预测相同结果</strong>”——这里解释为<strong>四个预测器都判定为“有害 / deleterious / damaging / high (按各工具定义)”</strong>时才认定为“预测致病”。</p></li>
+<li><p>ClinVar 数据将用于筛选 ClinVar 标注为 <code>Pathogenic</code> 或 <code>Likely_pathogenic</code> 的变异（从 ClinVar 的 GRCh38 VCF 下载并按区域抽取）。(<a href="https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/?utm_source=chatgpt.com" title="vcf_GRCh38 - NCBI FTP site">ftp.ncbi.nlm.nih.gov</a>)</p></li>
+</ul>
+<p>需要用到的主要资源 / 软件：gnomAD（release），ClinVar VCF（GRCh38），ANNOVAR（及 dbNSFP），bcftools/tabix，Python（pandas）。关于 ANNOVAR 与 dbNSFP 的基本用法见官方文档。(<a href="https://annovar.openbioinformatics.org/en/latest/user-guide/startup/?utm_source=chatgpt.com" title="Quick Start-Up Guide - ANNOVAR Documentation">annovar.openbioinformatics.org</a>)</p>
+<hr>
+<p><strong>注意</strong>：ANNOVAR 需在官网注册下载（不是 conda），dbNSFP 也需从其站点/镜像下载并放到 ANNOVAR 的 <code>humandb/</code> 目录（后面有说明）。关于 ClinVar 与 gnomAD 下载的访问地址会在下一节给出模板命令（因为 gnomAD 的 release/URL 会随时间变化，请按 gnomAD 官方下载页取最新 URL）。(<a href="https://gnomad.broadinstitute.org/downloads?utm_source=chatgpt.com" title="the gnomAD Downloads page - Broad Institute">gnomad.broadinstitute.org</a>)</p>
+<hr>
+</section>
+<section id="具体实验步骤逐条含可执行命令与-python-脚本" class="level1">
+<h1>具体实验步骤（逐条，含可执行命令与 Python 脚本）</h1>
+<blockquote class="blockquote">
+<p><strong>约定</strong>：下面演示以参考基因组 <strong>GRCh38</strong>（hg38）为准；若要用 hg19/GRCh37，请把对应的资源（gnomAD/hg19 或 ClinVar GRCh37）改为相应版本。</p>
+</blockquote>
+<hr>
+<section id="步骤-1-确认并固定-amacr-的基因坐标grch38" class="level2">
+<h2 class="anchored" data-anchor-id="步骤-1-确认并固定-amacr-的基因坐标grch38">步骤 1 — 确认并固定 AMACR 的基因坐标（GRCh38）</h2>
+<p>认领基因是 <strong>AMACR</strong>。我们在本实验中使用 NCBI / Ensembl 给出的 GRCh38 坐标（区间稍取宽一点以覆盖上游/下游可能影响剪接的位点）：</p>
+<ul>
+<li><p><strong>基因名 (HGNC)</strong>：<code>AMACR</code></p></li>
+<li><p><strong>参考基因组</strong>：GRCh38 (hg38)</p></li>
+<li><p><strong>推荐区域</strong>（带 250 bp 上下游缓冲）：</p>
+<pre><code>chr5:33,985,915-34,008,300</code></pre>
+<p>——（基因本身大致位于 chr5:5:33986165-34008104；为确保 splice 上下游位点包含在内，我们扩大上下游各 250 bp）。来源：Ensembl/NCBI。(<a href="https://www.ensembl.org/Homo_sapiens/Gene/Summary?g=ENSG00000242110&amp;utm_source=chatgpt.com" title="Gene: AMACR (ENSG00000242110) - Summary">Ensembl</a>)</p></li>
+</ul>
+<blockquote class="blockquote">
+<p>在后续命令中我会用变量 <code>CHR=5; START=33986165; END=34008104</code>（注意 POS 为 1-based）。</p>
+</blockquote>
+<hr>
+<hr>
+</section>
+<section id="背景理解" class="level2">
+<h2 class="anchored" data-anchor-id="背景理解">🧩 背景理解</h2>
+<p>我们要做的事情是分析 <strong>AMACR 基因</strong> 的变异，并且筛选出：</p>
+<ol type="1">
+<li><strong>失能（Loss-of-function, LoF）变异</strong>；</li>
+<li><strong>高一致致病预测的错义变异</strong>；</li>
+<li><strong>ClinVar 中已被标注为 Pathogenic / Likely pathogenic 的变异。</strong></li>
+</ol>
+<p>要实现这一点，我们需要从两个主要数据库拿到变异信息：</p>
+<ul>
+<li><strong>gnomAD</strong>：包含全基因组和外显子组的群体变异频率；</li>
+<li><strong>ClinVar</strong>：包含已知的临床意义注释。</li>
+</ul>
+<hr>
+</section>
+<section id="步骤-2-下载-子集化-gnomadamacr-区域" class="level2">
+<h2 class="anchored" data-anchor-id="步骤-2-下载-子集化-gnomadamacr-区域">🧬 步骤 2 — 下载 / 子集化 gnomAD（AMACR 区域）</h2>
+<section id="为什么要做这步" class="level3">
+<h3 class="anchored" data-anchor-id="为什么要做这步">🧠 为什么要做这步</h3>
+<p>因为 gnomAD 是非常大的数据库（上百 GB），我们不可能下载全数据库； 我们只需要提取 AMACR 基因对应的 <strong>基因组区域变异数据</strong>，用于分析它的变异分布、功能注释和频率。</p>
+<hr>
+</section>
+<section id="可选方法" class="level3">
+<h3 class="anchored" data-anchor-id="可选方法">🧰 可选方法</h3>
+<section id="方法-a使用-gnomad-网页版推荐简单" class="level4">
+<h4 class="anchored" data-anchor-id="方法-a使用-gnomad-网页版推荐简单">✅ 方法 A：使用 gnomAD <strong>网页版（推荐简单）</strong></h4>
+<ol type="1">
+<li><p>打开： 🔗 [https://gnomad.broadinstitute.org/gene/ENSG00000242110?dataset=gnomad_r4) （AMACR 的 Ensembl 基因 ID 是 <strong>ENSG00000242110.8</strong>）</p></li>
+<li><p>在页面中可以查看：</p>
+<ul>
+<li>所有 gnomAD 样本中该基因的变异；</li>
+<li>变异类型（missense / stop gained / splice 等）；</li>
+<li>每个变异的基因组坐标（GRCh38）。</li>
+</ul></li>
+<li><p><strong>下载数据</strong></p>
+<ul>
+<li>点击右上角 <strong>“Export variants”</strong>；</li>
+<li>选择 “Export table as CSV”；</li>
+<li>保存为文件，例如：<code>gnomad_amacr_variants.csv</code>。</li>
+</ul></li>
+</ol>
+<p>📘 文件中会包含：</p>
+<pre><code>chromosome | position | ref | alt | consequence | lof | allele_freq | annotation</code></pre>
+<p>这就是后续筛选 LoF 和 missense 的数据来源。</p>
+<hr>
+</section>
+<section id="方法-b命令行进阶方式可脚本化" class="level4">
+<h4 class="anchored" data-anchor-id="方法-b命令行进阶方式可脚本化">✅ 方法 B：命令行（进阶方式，可脚本化）</h4>
+<p>如果想用 Python / bash 来提取：</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 安装 gnomad-downloader</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install gnomad-downloader</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 下载 gnomAD exome 数据</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">gnomad-downloader</span> variants <span class="dt">\</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">--reference</span> GRCh38 <span class="dt">\</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">--dataset</span> gnomad_r4 <span class="dt">\</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">--region</span> <span class="st">"5:34,869,000-34,873,000"</span> <span class="dt">\</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">--output</span> amacr_gnomad.vcf.bgz</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<blockquote class="blockquote">
+<p>AMACR 位于 <strong>chr5:34,869,197-34,872,785 (GRCh38)</strong></p>
+</blockquote>
+<p>这会生成一个压缩的 VCF 文件，只包含 AMACR 基因区域。</p>
+<hr>
+</section>
+</section>
+</section>
+<section id="步骤-3-下载-clinvargrch38并抽取-amacr-区域" class="level2">
+<h2 class="anchored" data-anchor-id="步骤-3-下载-clinvargrch38并抽取-amacr-区域">🧫 步骤 3 — 下载 ClinVar（GRCh38）并抽取 AMACR 区域</h2>
+<section id="为什么要做这步-1" class="level3">
+<h3 class="anchored" data-anchor-id="为什么要做这步-1">🧠 为什么要做这步</h3>
+<p>因为 ClinVar 是一个 <strong>人工注释的临床数据库</strong>。 它告诉哪些变异已经被临床确认为：</p>
+<ul>
+<li>“Pathogenic”（致病）</li>
+<li>“Likely pathogenic”（可能致病）</li>
+<li>或者“Benign”（良性）</li>
+</ul>
+<p>我们需要它是因为：</p>
+<blockquote class="blockquote">
+<p><strong>gnomAD 只告诉群体中有这个变异</strong>，但不告诉你它是否有临床意义。 ClinVar 告诉你变异的“致病等级”。 所以我们要把 gnomAD 的 AMACR 变异和 ClinVar 的致病注释进行比对、筛选。</p>
+</blockquote>
+<hr>
+</section>
+<section id="下载-clinvargrch38" class="level3">
+<h3 class="anchored" data-anchor-id="下载-clinvargrch38">🧰 下载 ClinVar（GRCh38）</h3>
+<ol type="1">
+<li><p>进入官方网站： 🔗 <a href="https://www.ncbi.nlm.nih.gov/clinvar/">https://www.ncbi.nlm.nih.gov/clinvar/</a></p></li>
+<li><p>点击左侧 <strong>“Download” → “VCF (GRCh38)”</strong> 下载文件名类似：</p>
+<pre><code>clinvar_GRCh38.vcf.gz</code></pre>
+<p>下载链接https://ftp.ncbi.nlm.nih.gov/pub/clinvar/vcf_GRCh38/</p></li>
+<li><p>用 bcftools 或 Python 提取 AMACR 区域：</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">bcftools</span> view <span class="at">-r</span> 5:34869000-34873000 clinvar_GRCh38.vcf.gz <span class="at">-o</span> amacr_clinvar.vcf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>提取后我们得到 ClinVar 中所有在 AMACR 区域的变异信息，包括：</p>
+<ul>
+<li>临床意义（Pathogenic / Likely pathogenic）</li>
+<li>变异类型（missense、stop gained等）</li>
+</ul></li>
+</ol>
+<hr>
+<hr>
+</section>
+</section>
+<section id="目标" class="level2">
+<h2 class="anchored" data-anchor-id="目标">🧭 目标</h2>
+<ol type="1">
+<li><strong>筛选失能变异（Loss-of-function）</strong></li>
+<li><strong>预测错义变异致病性（SIFT、PolyPhen2、MutationAssessor、MetaSVM 全部一致）</strong></li>
+<li><strong>筛选 ClinVar 中“pathogenic”或“likely pathogenic”变异</strong></li>
+</ol>
+<hr>
+</section>
+<section id="一文件结构准备" class="level2">
+<h2 class="anchored" data-anchor-id="一文件结构准备">🧩 一、文件结构准备</h2>
+<p>请确保的目录如下：</p>
+<pre><code>E:\acode\homwwork\data\
+│
+├── gnomAD_v4.1.0_ENSG00000242110_2025_10_20_16_17_02.csv
+├── clinvar.vcf
+├── hg38_refGeneWithVerMrna.fa
+├── hg38_refGeneWithVer.txt
+└── annovar.latest\
+    └── annovar\
+        ├── humandb\
+        ├── convert2annovar.pl
+        ├── table_annovar.pl
+        └── annotate_variation.pl</code></pre>
+<hr>
+</section>
+<section id="二step-1把-gnomad-的-csv-转成-annovar-输入格式.avinput" class="level2">
+<h2 class="anchored" data-anchor-id="二step-1把-gnomad-的-csv-转成-annovar-输入格式.avinput">🧮 二、Step 1：把 gnomAD 的 CSV 转成 ANNOVAR 输入格式（.avinput）</h2>
+<p>ANNOVAR 只接受 <code>.avinput</code> 格式： 格式为：</p>
+<pre><code>chr    start    end    ref    alt</code></pre>
+<section id="方法-1用-python-转换推荐" class="level3">
+<h3 class="anchored" data-anchor-id="方法-1用-python-转换推荐">方法 1：用 Python 转换（推荐）</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 读取 gnomAD CSV</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="vs">r"E:</span><span class="ch">\a</span><span class="vs">code</span><span class="er">\</span><span class="vs">homwwork</span><span class="dv">\d</span><span class="vs">ata</span><span class="er">\</span><span class="vs">gnomAD_v4</span><span class="dv">.</span><span class="vs">1</span><span class="dv">.</span><span class="vs">0_ENSG00000242110_2025_10_20_16_17_02</span><span class="dv">.</span><span class="vs">csv"</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 保留必要的列</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> [<span class="st">"Chromosome"</span>, <span class="st">"Position"</span>, <span class="st">"Reference"</span>, <span class="st">"Alternate"</span>]</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df[cols]</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 生成 ANNOVAR 格式</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>df[<span class="st">"end"</span>] <span class="op">=</span> df[<span class="st">"Position"</span>]</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>avinput <span class="op">=</span> df[[<span class="st">"Chromosome"</span>, <span class="st">"Position"</span>, <span class="st">"Reference"</span>, <span class="st">"Alternate"</span>]]</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>avinput.to_csv(<span class="vs">r"E:</span><span class="ch">\a</span><span class="vs">code</span><span class="er">\</span><span class="vs">homwwork</span><span class="dv">\d</span><span class="vs">ata</span><span class="dv">\A</span><span class="vs">MACR</span><span class="dv">.</span><span class="vs">avinput"</span>, sep<span class="op">=</span><span class="st">'</span><span class="ch">\t</span><span class="st">'</span>, header<span class="op">=</span><span class="va">False</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>👉 输出文件：<code>E:\acode\homwwork\data\AMACR.avinput</code></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jayz@localhost:/mnt/e/acode/homwwork/data$</span> head AMACR.avinput</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ex">5</span>       33988236        G       T</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="ex">5</span>       33988238        A       G</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="ex">5</span>       33988239        TAAGA   T</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="ex">5</span>       33988239        T       C</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="ex">5</span>       33988241        A       G</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="ex">5</span>       33988242        G       A</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="ex">5</span>       33988243        A       G</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="ex">5</span>       33988244        A       C</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="ex">5</span>       33988244        A       G</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="ex">5</span>       33988246        G       A</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="问题一字段数量不足只有4列" class="level3">
+<h3 class="anchored" data-anchor-id="问题一字段数量不足只有4列">❗ 问题一：字段数量不足（只有4列）</h3>
+<p>ANNOVAR 要求 <code>.avinput</code> 文件至少包含 <strong>5列</strong>：</p>
+<pre><code>chr    start    end    ref    alt</code></pre>
+<p>当前的文件只有：</p>
+<pre><code>chr    pos      ref    alt</code></pre>
+<p>这会导致 ANNOVAR 无法解析坐标范围，进而判定为格式错误，所有记录被丢入 <code>invalid_input</code>。</p>
+<hr>
+</section>
+<section id="解决方案补齐-end-列" class="level3">
+<h3 class="anchored" data-anchor-id="解决方案补齐-end-列">✅ 解决方案：补齐 <code>end</code> 列</h3>
+<p>可以使用 <code>awk</code> 自动补齐第二列为 <code>end</code> 列（等于 <code>start</code>），生成一个新的标准文件：</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">'{print $1"\t"$2"\t"$2"\t"$3"\t"$4}'</span> AMACR.avinput <span class="op">&gt;</span> AMACR_fixed.avinput</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>这会生成：</p>
+<pre><code>5    33988236    33988236    G    T
+5    33988238    33988238    A    G
+...</code></pre>
+<hr>
+</section>
+<section id="问题二可能染色体未加-chr-前缀" class="level3">
+<h3 class="anchored" data-anchor-id="问题二可能染色体未加-chr-前缀">❗ 问题二（可能）：染色体未加 <code>chr</code> 前缀</h3>
+<p>ANNOVAR 默认使用 <code>chr5</code> 而不是 <code>5</code>。可以再加一步修复：</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="st">'{print "chr"$1"\t"$2"\t"$2"\t"$3"\t"$4}'</span> AMACR.avinput <span class="op">&gt;</span> AMACR_fixed.avinput</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jayz@localhost:/mnt/e/acode/homwwork/data$</span> head AMACR_fixed.avinput</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33988236        33988236        G       T</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33988238        33988238        A       G</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33988239        33988239        TAAGA   T</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33988239        33988239        T       C</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33988241        33988241        A       G</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33988242        33988242        G       A</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33988243        33988243        A       G</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33988244        33988244        A       C</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33988244        33988244        A       G</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33988246        33988246        G       A</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+</section>
+<section id="三step-2下载并准备注释数据库dbnsfp-clinvar-refgene" class="level2">
+<h2 class="anchored" data-anchor-id="三step-2下载并准备注释数据库dbnsfp-clinvar-refgene">🧰 三、Step 2：下载并准备注释数据库（dbNSFP + ClinVar + refGene）</h2>
+<p>进入 ANNOVAR 的 <code>humandb</code> 文件夹：</p>
+<pre><code>cd E:\acode\homwwork\data\annovar.latest\annovar\humandb</code></pre>
+<p>然后下载数据库（在 Windows 下可以用 WSL 或 git bash 执行）：</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># dbNSFP（含SIFT, PolyPhen2, MutationAssessor, MetaSVM等预测）</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="ex">./annotate_variation.pl</span> <span class="at">-downdb</span> <span class="at">-webfrom</span> annovar dbnsfp42a humandb/ <span class="at">-buildver</span> hg38</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ClinVar</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="ex">./annotate_variation.pl</span> <span class="at">-downdb</span> <span class="at">-webfrom</span> annovar clinvar_20240611 humandb/ <span class="at">-buildver</span> hg38</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># refGene（已下载则可跳过）</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a><span class="ex">./annotate_variation.pl</span> <span class="at">-downdb</span> <span class="at">-webfrom</span> annovar refGene humandb/ <span class="at">-buildver</span> hg38</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+<section id="方法一手动下载并放入-humandb-目录" class="level4">
+<h4 class="anchored" data-anchor-id="方法一手动下载并放入-humandb-目录">方法一：手动下载并放入 <code>humandb</code> 目录</h4>
+<p>可以直接在浏览器中访问以下链接并下载：</p>
+<ul>
+<li><a href="http://www.openbioinformatics.org/annovar/download/hg38_dbnsfp42a.txt.gz">hg38_dbnsfp42a.txt.gz</a>(大小40G,太big了)</li>
+<li><a href="http://www.openbioinformatics.org/annovar/download/hg38_dbnsfp42a.txt.idx.gz">hg38_dbnsfp42a.txt.idx.gz</a></li>
+</ul>
+<p>下载后将这两个文件放入：</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">/mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb/</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>然后解压：</p>
+<p>同理下载三个文件放入： <a href="http://www.openbioinformatics.org/annovar/download/hg38_refGene.txt.gz">hg38_refGene.txt.gz</a> <a href="http://www.openbioinformatics.org/annovar/download/hg38_refGeneMrna.fa.gz">hg38_refGeneMrna.fa.gz</a> <a href="http://www.openbioinformatics.org/annovar/download/hg38_refGeneVersion.txt.gz">hg38_refGeneVersion.txt.gz</a></p>
+<p>还有clinvar文件 <a href="http://www.openbioinformatics.org/annovar/download/hg38_clinvar_20240611.txt.gz">hg38_clinvar_20240611.txt.gz</a> <a href="http://www.openbioinformatics.org/annovar/download/hg38_clinvar_20240611.txt.idx.gz">hg38_clinvar_20240611.txt.idx.gz</a></p>
+</section>
+</section>
+</section>
+<section id="section" class="level1">
+<h1></h1>
+<section id="验证文件结构" class="level3">
+<h3 class="anchored" data-anchor-id="验证文件结构">🧪 验证文件结构</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jayz@localhost:/mnt/e/acode/homwwork/data$</span> tree</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="bu">.</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> AMACR.avinput</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> annovar.latest</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>   └── annovar</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       ├── annotate_variation.pl</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       ├── coding_change.pl</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       ├── convert2annovar.pl</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       ├── example</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── README</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── ex1.avinput</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── ex2.vcf</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── example.simple_region</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── example.tab_region</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── gene_fullxref.txt</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── gene_xref.txt</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── grantham.matrix</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   └── snplist.txt</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       ├── humandb</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── GRCh37_MT_ensGeneMrna.fa</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── annovar_downdb.log</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── hg19_example_db_gff3.txt</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── hg19_refGene.txt</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── hg19_refGeneMrna.fa</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── hg19_refGeneVersion.txt</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── hg19_refGeneWithVer.txt</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── hg19_refGeneWithVerMrna.fa</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── hg38_clinvar_20240611.txt</span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── hg38_clinvar_20240611.txt.idx</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── hg38_dbnsfp42a.txt</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── hg38_dbnsfp42a.txt.idx</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── hg38_ensGene.txt</span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── hg38_ensGeneMrna.fa</span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── hg38_refGene.txt</span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── hg38_refGeneMrna.fa</span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── hg38_refGeneVersion.txt</span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   ├── hg38_refGeneWithVer.txt</span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       │   └── hg38_refGeneWithVerMrna.fa</span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       ├── retrieve_seq_from_fasta.pl</span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       ├── table_annovar.pl</span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>       └── variants_reduction.pl</span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a><span class="ex">├──</span> clinvar.vcf</span>
+<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>   ├── clinvar.avinput</span>
+<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a><span class="ex">│</span>   └── clinvar.vcf</span>
+<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a><span class="ex">└──</span> gnomAD_v4.1.0_ENSG00000242110_2025_10_20_16_17_02.csv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="四step-3执行-annovar-注释命令" class="level2">
+<h2 class="anchored" data-anchor-id="四step-3执行-annovar-注释命令">🧬 四、Step 3：执行 ANNOVAR 注释命令</h2>
+<p>进入 ANNOVAR 主目录：</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> E:<span class="dt">\a</span>code<span class="dt">\h</span>omwwork<span class="dt">\d</span>ata<span class="dt">\a</span>nnovar.latest<span class="dt">\a</span>nnovar</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>执行注释命令（Windows 示例）：</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb21"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">perl</span> table_annovar.pl /mnt/e/acode/homwwork/data/AMACR_fixed.avinput humandb/ <span class="dt">\</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-buildver</span> hg38 <span class="dt">\</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-out</span> /mnt/e/acode/homwwork/data/AMACR_anno <span class="dt">\</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-remove</span> <span class="dt">\</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">-protocol</span> refGene,dbnsfp42a,clinvar_20240611 <span class="dt">\</span></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">-operation</span> g,f,f <span class="dt">\</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">-nastring</span> . <span class="dt">\</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">-polish</span> <span class="dt">\</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">-xref</span> example/gene_fullxref.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>🔹 <strong>解释</strong>：</p>
+<ul>
+<li><p><code>refGene</code>：基因注释，用于识别类型（frameshift、stopgain 等）</p></li>
+<li><p><code>dbnsfp42a</code>：错义预测（SIFT, PolyPhen2, MutationAssessor, MetaSVM）</p></li>
+<li><p><code>clinvar_20240611</code>：ClinVar 致病性标签</p></li>
+<li><p><code>-operation g,f,f</code> 表示三者分别是 gene-based, filter-based, filter-based 注释</p></li>
+<li><p>输出文件：</p>
+<ul>
+<li><code>AMACR_anno.hg38_multianno.txt</code>（这是关键结果）</li>
+</ul></li>
+</ul>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jayz@localhost:/mnt/e/acode/homwwork/data/annovar.latest/annovar$</span> perl table_annovar.pl /mnt/e/acode/homwwork/data/AMACR_fixed.avinput humandb/ <span class="dt">\</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">-buildver</span> hg38 <span class="dt">\</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">-out</span> /mnt/e/acode/homwwork/data/AMACR_anno <span class="dt">\</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">-remove</span> <span class="dt">\</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">-protocol</span> refGene,dbnsfp42a,clinvar_20240611 <span class="dt">\</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">-operation</span> g,f,f <span class="dt">\</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">-nastring</span> . <span class="dt">\</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">-polish</span> <span class="dt">\</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">-xref</span> example/gene_fullxref.txt</span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="ex">-----------------------------------------------------------------</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Processing operation=g protocol=refGene</span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Running with system command <span class="op">&lt;</span>annotate_variation.pl <span class="at">-geneanno</span> <span class="at">-buildver</span> hg38 <span class="at">-dbtype</span> refGene <span class="at">-outfile</span> /mnt/e/acode/homwwork/data/AMACR_anno.refGene <span class="at">-exonsort</span> <span class="at">-nofirstcodondel</span> /mnt/e/acode/homwwork/data/AMACR_fixed.avinput humandb/<span class="op">&gt;</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Output files are written to /mnt/e/acode/homwwork/data/AMACR_anno.refGene.variant_function, /mnt/e/acode/homwwork/data/AMACR_anno.refGene.exonic_variant_function</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Reading gene annotation from humandb/hg38_refGene.txt ... Done with 88819 transcripts <span class="er">(</span><span class="ex">including</span> 21511 without coding sequence annotation<span class="kw">)</span> <span class="cf">for</span> <span class="ex">28307</span> unique genes</span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Processing next batch with 1776 unique variants in 1776 input lines</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Reading FASTA sequences from humandb/hg38_refGeneMrna.fa ... Done with 3 sequences</span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="ex">WARNING:</span> A total of 606 sequences will be ignored due to lack of correct ORF annotation</span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Variants with invalid input format are written to /mnt/e/acode/homwwork/data/AMACR_anno.refGene.invalid_input</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Running with system command <span class="op">&lt;</span>coding_change.pl  /mnt/e/acode/homwwork/data/AMACR_anno.refGene.exonic_variant_function.orig humandb//hg38_refGene.txt humandb//hg38_refGeneMrna.fa <span class="at">-alltranscript</span> <span class="at">-out</span> /mnt/e/acode/homwwork/data/AMACR_anno.refGene.fa <span class="at">-newevf</span> /mnt/e/acode/homwwork/data/AMACR_anno.refGene.exonic_variant_function<span class="op">&gt;</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a><span class="ex">-----------------------------------------------------------------</span></span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Processing operation=f protocol=dbnsfp42a</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Finished reading 107 column headers for <span class="st">'-dbtype dbnsfp42a'</span></span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Running system command <span class="op">&lt;</span>annotate_variation.pl <span class="at">-filter</span> <span class="at">-dbtype</span> dbnsfp42a <span class="at">-buildver</span> hg38 <span class="at">-outfile</span> /mnt/e/acode/homwwork/data/AMACR_anno /mnt/e/acode/homwwork/data/AMACR_fixed.avinput humandb/ <span class="at">-otherinfo</span><span class="op">&gt;</span></span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Output file with variants matching filtering criteria is written to /mnt/e/acode/homwwork/data/AMACR_anno.hg38_dbnsfp42a_dropped, and output file with other variants is written to /mnt/e/acode/homwwork/data/AMACR_anno.hg38_dbnsfp42a_filtered</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Processing next batch with 1776 unique variants in 1853 input lines</span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Database index loaded. Total number of bins is 556674 and the number of bins to be scanned is 24</span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Scanning filter database humandb/hg38_dbnsfp42a.txt...Done</span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Variants with invalid input format are written to /mnt/e/acode/homwwork/data/AMACR_anno.invalid_input</span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a><span class="ex">-----------------------------------------------------------------</span></span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Processing operation=f protocol=clinvar_20240611</span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Finished reading 5 column headers for <span class="st">'-dbtype clinvar_20240611'</span></span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Running system command <span class="op">&lt;</span>annotate_variation.pl <span class="at">-filter</span> <span class="at">-dbtype</span> clinvar_20240611 <span class="at">-buildver</span> hg38 <span class="at">-outfile</span> /mnt/e/acode/homwwork/data/AMACR_anno /mnt/e/acode/homwwork/data/AMACR_fixed.avinput humandb/ <span class="at">-otherinfo</span><span class="op">&gt;</span></span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> the <span class="at">--dbtype</span> clinvar_20240611 is assumed to be in generic ANNOVAR database format</span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Output file with variants matching filtering criteria is written to /mnt/e/acode/homwwork/data/AMACR_anno.hg38_clinvar_20240611_dropped, and output file with other variants is written to /mnt/e/acode/homwwork/data/AMACR_anno.hg38_clinvar_20240611_filtered</span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Processing next batch with 1776 unique variants in 1853 input lines</span>
+<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Database index loaded. Total number of bins is 171655 and the number of bins to be scanned is 7</span>
+<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Scanning filter database humandb/hg38_clinvar_20240611.txt...Done</span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a><span class="ex">NOTICE:</span> Variants with invalid input format are written to /mnt/e/acode/homwwork/data/AMACR_anno.invalid_input</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jayz@localhost:/mnt/e/acode/homwwork/data$</span> ls</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="ex">AMACR.avinput</span>                  AMACR_anno.refGene.invalid_input  annovar.latest</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="ex">AMACR_anno.hg38_multianno.txt</span>  AMACR_clinvar_pathogenic.txt      clinvar.vcf</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="ex">AMACR_anno.invalid_input</span>       AMACR_fixed.avinput               gnomAD_v4.1.0_ENSG00000242110_2025_10_20_16_17_02.csv</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="五step-4结果分析与筛选" class="level2">
+<h2 class="anchored" data-anchor-id="五step-4结果分析与筛选">🧾 五、Step 4：结果分析与筛选</h2>
+<p>先看看有什么列</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> <span class="at">-n</span> 1 AMACR_anno.hg38_multianno.txt <span class="kw">|</span> <span class="fu">tr</span> <span class="st">'\t'</span> <span class="st">'\n'</span> <span class="kw">|</span> <span class="fu">nl</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>得到</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jayz@localhost:/mnt/e/acode/homwwork/data$</span> head <span class="at">-n</span> 1 AMACR_anno.hg38_multianno.txt <span class="kw">|</span> <span class="fu">tr</span> <span class="st">'\t'</span> <span class="st">'\n'</span> <span class="kw">|</span> <span class="fu">nl</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>     <span class="ex">1</span>  Chr</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>     <span class="ex">2</span>  Start</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>     <span class="ex">3</span>  End</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>     <span class="ex">4</span>  Ref</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>     <span class="ex">5</span>  Alt</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>     <span class="ex">6</span>  Func.refGene</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>     <span class="ex">7</span>  Gene.refGene</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>     <span class="ex">8</span>  GeneDetail.refGene</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>     <span class="ex">9</span>  ExonicFunc.refGene</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>    <span class="ex">10</span>  AAChange.refGene</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>    <span class="ex">11</span>  SIFT_score</span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>    <span class="ex">12</span>  SIFT_converted_rankscore</span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>    <span class="ex">13</span>  SIFT_pred</span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>    <span class="ex">14</span>  SIFT4G_score</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    <span class="ex">15</span>  SIFT4G_converted_rankscore</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    <span class="ex">16</span>  SIFT4G_pred</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>    <span class="ex">17</span>  Polyphen2_HDIV_score</span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>    <span class="ex">18</span>  Polyphen2_HDIV_rankscore</span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>    <span class="ex">19</span>  Polyphen2_HDIV_pred</span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>    <span class="ex">20</span>  Polyphen2_HVAR_score</span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>    <span class="ex">21</span>  Polyphen2_HVAR_rankscore</span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>    <span class="ex">22</span>  Polyphen2_HVAR_pred</span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>    <span class="ex">23</span>  LRT_score</span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>    <span class="ex">24</span>  LRT_converted_rankscore</span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>    <span class="ex">25</span>  LRT_pred</span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>    <span class="ex">26</span>  MutationTaster_score</span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>    <span class="ex">27</span>  MutationTaster_converted_rankscore</span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>    <span class="ex">28</span>  MutationTaster_pred</span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>    <span class="ex">29</span>  MutationAssessor_score</span>
+<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>    <span class="ex">30</span>  MutationAssessor_rankscore</span>
+<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a>    <span class="ex">31</span>  MutationAssessor_pred</span>
+<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a>    <span class="ex">32</span>  FATHMM_score</span>
+<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a>    <span class="ex">33</span>  FATHMM_converted_rankscore</span>
+<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a>    <span class="ex">34</span>  FATHMM_pred</span>
+<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a>    <span class="ex">35</span>  PROVEAN_score</span>
+<span id="cb25-37"><a href="#cb25-37" aria-hidden="true" tabindex="-1"></a>    <span class="ex">36</span>  PROVEAN_converted_rankscore</span>
+<span id="cb25-38"><a href="#cb25-38" aria-hidden="true" tabindex="-1"></a>    <span class="ex">37</span>  PROVEAN_pred</span>
+<span id="cb25-39"><a href="#cb25-39" aria-hidden="true" tabindex="-1"></a>    <span class="ex">38</span>  VEST4_score</span>
+<span id="cb25-40"><a href="#cb25-40" aria-hidden="true" tabindex="-1"></a>    <span class="ex">39</span>  VEST4_rankscore</span>
+<span id="cb25-41"><a href="#cb25-41" aria-hidden="true" tabindex="-1"></a>    <span class="ex">40</span>  MetaSVM_score</span>
+<span id="cb25-42"><a href="#cb25-42" aria-hidden="true" tabindex="-1"></a>    <span class="ex">41</span>  MetaSVM_rankscore</span>
+<span id="cb25-43"><a href="#cb25-43" aria-hidden="true" tabindex="-1"></a>    <span class="ex">42</span>  MetaSVM_pred</span>
+<span id="cb25-44"><a href="#cb25-44" aria-hidden="true" tabindex="-1"></a>    <span class="ex">43</span>  MetaLR_score</span>
+<span id="cb25-45"><a href="#cb25-45" aria-hidden="true" tabindex="-1"></a>    <span class="ex">44</span>  MetaLR_rankscore</span>
+<span id="cb25-46"><a href="#cb25-46" aria-hidden="true" tabindex="-1"></a>    <span class="ex">45</span>  MetaLR_pred</span>
+<span id="cb25-47"><a href="#cb25-47" aria-hidden="true" tabindex="-1"></a>    <span class="ex">46</span>  MetaRNN_score</span>
+<span id="cb25-48"><a href="#cb25-48" aria-hidden="true" tabindex="-1"></a>    <span class="ex">47</span>  MetaRNN_rankscore</span>
+<span id="cb25-49"><a href="#cb25-49" aria-hidden="true" tabindex="-1"></a>    <span class="ex">48</span>  MetaRNN_pred</span>
+<span id="cb25-50"><a href="#cb25-50" aria-hidden="true" tabindex="-1"></a>    <span class="ex">49</span>  M-CAP_score</span>
+<span id="cb25-51"><a href="#cb25-51" aria-hidden="true" tabindex="-1"></a>    <span class="ex">50</span>  M-CAP_rankscore</span>
+<span id="cb25-52"><a href="#cb25-52" aria-hidden="true" tabindex="-1"></a>    <span class="ex">51</span>  M-CAP_pred</span>
+<span id="cb25-53"><a href="#cb25-53" aria-hidden="true" tabindex="-1"></a>    <span class="ex">52</span>  REVEL_score</span>
+<span id="cb25-54"><a href="#cb25-54" aria-hidden="true" tabindex="-1"></a>    <span class="ex">53</span>  REVEL_rankscore</span>
+<span id="cb25-55"><a href="#cb25-55" aria-hidden="true" tabindex="-1"></a>    <span class="ex">54</span>  MutPred_score</span>
+<span id="cb25-56"><a href="#cb25-56" aria-hidden="true" tabindex="-1"></a>    <span class="ex">55</span>  MutPred_rankscore</span>
+<span id="cb25-57"><a href="#cb25-57" aria-hidden="true" tabindex="-1"></a>    <span class="ex">56</span>  MVP_score</span>
+<span id="cb25-58"><a href="#cb25-58" aria-hidden="true" tabindex="-1"></a>    <span class="ex">57</span>  MVP_rankscore</span>
+<span id="cb25-59"><a href="#cb25-59" aria-hidden="true" tabindex="-1"></a>    <span class="ex">58</span>  MPC_score</span>
+<span id="cb25-60"><a href="#cb25-60" aria-hidden="true" tabindex="-1"></a>    <span class="ex">59</span>  MPC_rankscore</span>
+<span id="cb25-61"><a href="#cb25-61" aria-hidden="true" tabindex="-1"></a>    <span class="ex">60</span>  PrimateAI_score</span>
+<span id="cb25-62"><a href="#cb25-62" aria-hidden="true" tabindex="-1"></a>    <span class="ex">61</span>  PrimateAI_rankscore</span>
+<span id="cb25-63"><a href="#cb25-63" aria-hidden="true" tabindex="-1"></a>    <span class="ex">62</span>  PrimateAI_pred</span>
+<span id="cb25-64"><a href="#cb25-64" aria-hidden="true" tabindex="-1"></a>    <span class="ex">63</span>  DEOGEN2_score</span>
+<span id="cb25-65"><a href="#cb25-65" aria-hidden="true" tabindex="-1"></a>    <span class="ex">64</span>  DEOGEN2_rankscore</span>
+<span id="cb25-66"><a href="#cb25-66" aria-hidden="true" tabindex="-1"></a>    <span class="ex">65</span>  DEOGEN2_pred</span>
+<span id="cb25-67"><a href="#cb25-67" aria-hidden="true" tabindex="-1"></a>    <span class="ex">66</span>  BayesDel_addAF_score</span>
+<span id="cb25-68"><a href="#cb25-68" aria-hidden="true" tabindex="-1"></a>    <span class="ex">67</span>  BayesDel_addAF_rankscore</span>
+<span id="cb25-69"><a href="#cb25-69" aria-hidden="true" tabindex="-1"></a>    <span class="ex">68</span>  BayesDel_addAF_pred</span>
+<span id="cb25-70"><a href="#cb25-70" aria-hidden="true" tabindex="-1"></a>    <span class="ex">69</span>  BayesDel_noAF_score</span>
+<span id="cb25-71"><a href="#cb25-71" aria-hidden="true" tabindex="-1"></a>    <span class="ex">70</span>  BayesDel_noAF_rankscore</span>
+<span id="cb25-72"><a href="#cb25-72" aria-hidden="true" tabindex="-1"></a>    <span class="ex">71</span>  BayesDel_noAF_pred</span>
+<span id="cb25-73"><a href="#cb25-73" aria-hidden="true" tabindex="-1"></a>    <span class="ex">72</span>  ClinPred_score</span>
+<span id="cb25-74"><a href="#cb25-74" aria-hidden="true" tabindex="-1"></a>    <span class="ex">73</span>  ClinPred_rankscore</span>
+<span id="cb25-75"><a href="#cb25-75" aria-hidden="true" tabindex="-1"></a>    <span class="ex">74</span>  ClinPred_pred</span>
+<span id="cb25-76"><a href="#cb25-76" aria-hidden="true" tabindex="-1"></a>    <span class="ex">75</span>  LIST-S2_score</span>
+<span id="cb25-77"><a href="#cb25-77" aria-hidden="true" tabindex="-1"></a>    <span class="ex">76</span>  LIST-S2_rankscore</span>
+<span id="cb25-78"><a href="#cb25-78" aria-hidden="true" tabindex="-1"></a>    <span class="ex">77</span>  LIST-S2_pred</span>
+<span id="cb25-79"><a href="#cb25-79" aria-hidden="true" tabindex="-1"></a>    <span class="ex">78</span>  Aloft_pred</span>
+<span id="cb25-80"><a href="#cb25-80" aria-hidden="true" tabindex="-1"></a>    <span class="ex">79</span>  Aloft_Confidence</span>
+<span id="cb25-81"><a href="#cb25-81" aria-hidden="true" tabindex="-1"></a>    <span class="ex">80</span>  CADD_raw</span>
+<span id="cb25-82"><a href="#cb25-82" aria-hidden="true" tabindex="-1"></a>    <span class="ex">81</span>  CADD_raw_rankscore</span>
+<span id="cb25-83"><a href="#cb25-83" aria-hidden="true" tabindex="-1"></a>    <span class="ex">82</span>  CADD_phred</span>
+<span id="cb25-84"><a href="#cb25-84" aria-hidden="true" tabindex="-1"></a>    <span class="ex">83</span>  DANN_score</span>
+<span id="cb25-85"><a href="#cb25-85" aria-hidden="true" tabindex="-1"></a>    <span class="ex">84</span>  DANN_rankscore</span>
+<span id="cb25-86"><a href="#cb25-86" aria-hidden="true" tabindex="-1"></a>    <span class="ex">85</span>  fathmm-MKL_coding_score</span>
+<span id="cb25-87"><a href="#cb25-87" aria-hidden="true" tabindex="-1"></a>    <span class="ex">86</span>  fathmm-MKL_coding_rankscore</span>
+<span id="cb25-88"><a href="#cb25-88" aria-hidden="true" tabindex="-1"></a>    <span class="ex">87</span>  fathmm-MKL_coding_pred</span>
+<span id="cb25-89"><a href="#cb25-89" aria-hidden="true" tabindex="-1"></a>    <span class="ex">88</span>  fathmm-XF_coding_score</span>
+<span id="cb25-90"><a href="#cb25-90" aria-hidden="true" tabindex="-1"></a>    <span class="ex">89</span>  fathmm-XF_coding_rankscore</span>
+<span id="cb25-91"><a href="#cb25-91" aria-hidden="true" tabindex="-1"></a>    <span class="ex">90</span>  fathmm-XF_coding_pred</span>
+<span id="cb25-92"><a href="#cb25-92" aria-hidden="true" tabindex="-1"></a>    <span class="ex">91</span>  Eigen-raw_coding</span>
+<span id="cb25-93"><a href="#cb25-93" aria-hidden="true" tabindex="-1"></a>    <span class="ex">92</span>  Eigen-raw_coding_rankscore</span>
+<span id="cb25-94"><a href="#cb25-94" aria-hidden="true" tabindex="-1"></a>    <span class="ex">93</span>  Eigen-PC-raw_coding</span>
+<span id="cb25-95"><a href="#cb25-95" aria-hidden="true" tabindex="-1"></a>    <span class="ex">94</span>  Eigen-PC-raw_coding_rankscore</span>
+<span id="cb25-96"><a href="#cb25-96" aria-hidden="true" tabindex="-1"></a>    <span class="ex">95</span>  GenoCanyon_score</span>
+<span id="cb25-97"><a href="#cb25-97" aria-hidden="true" tabindex="-1"></a>    <span class="ex">96</span>  GenoCanyon_rankscore</span>
+<span id="cb25-98"><a href="#cb25-98" aria-hidden="true" tabindex="-1"></a>    <span class="ex">97</span>  integrated_fitCons_score</span>
+<span id="cb25-99"><a href="#cb25-99" aria-hidden="true" tabindex="-1"></a>    <span class="ex">98</span>  integrated_fitCons_rankscore</span>
+<span id="cb25-100"><a href="#cb25-100" aria-hidden="true" tabindex="-1"></a>    <span class="ex">99</span>  integrated_confidence_value</span>
+<span id="cb25-101"><a href="#cb25-101" aria-hidden="true" tabindex="-1"></a>   <span class="ex">100</span>  LINSIGHT</span>
+<span id="cb25-102"><a href="#cb25-102" aria-hidden="true" tabindex="-1"></a>   <span class="ex">101</span>  LINSIGHT_rankscore</span>
+<span id="cb25-103"><a href="#cb25-103" aria-hidden="true" tabindex="-1"></a>   <span class="ex">102</span>  GERP++_NR</span>
+<span id="cb25-104"><a href="#cb25-104" aria-hidden="true" tabindex="-1"></a>   <span class="ex">103</span>  GERP++_RS</span>
+<span id="cb25-105"><a href="#cb25-105" aria-hidden="true" tabindex="-1"></a>   <span class="ex">104</span>  GERP++_RS_rankscore</span>
+<span id="cb25-106"><a href="#cb25-106" aria-hidden="true" tabindex="-1"></a>   <span class="ex">105</span>  phyloP100way_vertebrate</span>
+<span id="cb25-107"><a href="#cb25-107" aria-hidden="true" tabindex="-1"></a>   <span class="ex">106</span>  phyloP100way_vertebrate_rankscore</span>
+<span id="cb25-108"><a href="#cb25-108" aria-hidden="true" tabindex="-1"></a>   <span class="ex">107</span>  phyloP30way_mammalian</span>
+<span id="cb25-109"><a href="#cb25-109" aria-hidden="true" tabindex="-1"></a>   <span class="ex">108</span>  phyloP30way_mammalian_rankscore</span>
+<span id="cb25-110"><a href="#cb25-110" aria-hidden="true" tabindex="-1"></a>   <span class="ex">109</span>  phastCons100way_vertebrate</span>
+<span id="cb25-111"><a href="#cb25-111" aria-hidden="true" tabindex="-1"></a>   <span class="ex">110</span>  phastCons100way_vertebrate_rankscore</span>
+<span id="cb25-112"><a href="#cb25-112" aria-hidden="true" tabindex="-1"></a>   <span class="ex">111</span>  phastCons30way_mammalian</span>
+<span id="cb25-113"><a href="#cb25-113" aria-hidden="true" tabindex="-1"></a>   <span class="ex">112</span>  phastCons30way_mammalian_rankscore</span>
+<span id="cb25-114"><a href="#cb25-114" aria-hidden="true" tabindex="-1"></a>   <span class="ex">113</span>  SiPhy_29way_logOdds</span>
+<span id="cb25-115"><a href="#cb25-115" aria-hidden="true" tabindex="-1"></a>   <span class="ex">114</span>  SiPhy_29way_logOdds_rankscore</span>
+<span id="cb25-116"><a href="#cb25-116" aria-hidden="true" tabindex="-1"></a>   <span class="ex">115</span>  Interpro_domain</span>
+<span id="cb25-117"><a href="#cb25-117" aria-hidden="true" tabindex="-1"></a>   <span class="ex">116</span>  GTEx_V8_gene</span>
+<span id="cb25-118"><a href="#cb25-118" aria-hidden="true" tabindex="-1"></a>   <span class="ex">117</span>  GTEx_V8_tissue</span>
+<span id="cb25-119"><a href="#cb25-119" aria-hidden="true" tabindex="-1"></a>   <span class="ex">118</span>  CLNALLELEID</span>
+<span id="cb25-120"><a href="#cb25-120" aria-hidden="true" tabindex="-1"></a>   <span class="ex">119</span>  CLNDN</span>
+<span id="cb25-121"><a href="#cb25-121" aria-hidden="true" tabindex="-1"></a>   <span class="ex">120</span>  CLNDISDB</span>
+<span id="cb25-122"><a href="#cb25-122" aria-hidden="true" tabindex="-1"></a>   <span class="ex">121</span>  CLNREVSTAT</span>
+<span id="cb25-123"><a href="#cb25-123" aria-hidden="true" tabindex="-1"></a>   <span class="ex">122</span>  CLNSIG</span>
+<span id="cb25-124"><a href="#cb25-124" aria-hidden="true" tabindex="-1"></a>   </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="筛选-loss-of-function-变异" class="level3">
+<h3 class="anchored" data-anchor-id="筛选-loss-of-function-变异">（1）筛选 Loss-of-function 变异</h3>
+<p>在 <code>Func.refGene</code> 或 <code>ExonicFunc.refGene</code> 列中筛选：</p>
+<pre><code>stopgain
+frameshift_deletion
+frameshift_insertion
+splicing
+stoploss
+startloss</code></pre>
+</section>
+<section id="生物学意义解读" class="level3">
+<h3 class="anchored" data-anchor-id="生物学意义解读">🧠 生物学意义解读</h3>
+<ul>
+<li><strong>stopgain</strong>：产生提前终止密码子，导致蛋白截断，通常是强致病信号。</li>
+<li><strong>frameshift_deletion/insertion</strong>：移码突变，改变整个蛋白结构，常见于严重遗传病。</li>
+<li><strong>splicing</strong>：影响剪接位点，可能导致外显子跳跃或错配，影响蛋白功能。</li>
+<li><strong>stoploss</strong>：终止密码子丢失，可能导致蛋白延长，功能异常。</li>
+<li><strong>startloss</strong>：起始密码子丢失，可能导致蛋白无法翻译。</li>
+</ul>
+<hr>
+</section>
+<section id="筛选命令基于第-9-列-exonicfunc.refgene" class="level3">
+<h3 class="anchored" data-anchor-id="筛选命令基于第-9-列-exonicfunc.refgene">✅ 筛选命令（基于第 9 列 <code>ExonicFunc.refGene</code>）</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="at">-F</span><span class="st">'\t'</span> <span class="st">'$9 ~ /stopgain|frameshift_deletion|frameshift_insertion|splicing|stoploss|startloss/'</span> AMACR_anno.hg38_multianno.txt <span class="op">&gt;</span> AMACR_LOF_detailed.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jayz@localhost:/mnt/e/acode/homwwork/data$</span> head AMACR_LOF_detailed.txt </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33989093        33989093        T       G       exonic  AMACR   .       stoploss        AMACR:NM_014324:exon5:c.A1149C:p.X383Y  .       .       . ..       .       .       .       .       .       .       .       .       .       .       1       0.810   D       .       .       .       .       .       . ..       .       0.149   0.199   .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       . ..       .       .       .       .       .       .       .       .       <span class="at">-0.114</span>  0.342   T       <span class="at">-0.401</span>  0.333   T       .       .       .       .       . ..<span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>    <span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>    <span class="ex">0.923</span>   0.141   10.68   0.684   0.086   0.975   0.755   D       .       .       .       <span class="at">-0.034</span>  0.403   <span class="at">-0.055</span>  0.373   1.000   0.748   0.322      0.056   0       0.952   0.625   5.51    5.51    0.818   2.182   0.422   1.138   0.647   0.990   0.370   0.005   0.098   11.848  0.517   .<span class="kw">;</span><span class="bu">.</span>     . .588429  not_provided    MedGen:CN517202 criteria_provided,_single_submitter     Uncertain_significance</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33989094        33989094        T       TAG     exonic  AMACR   .       stoploss        AMACR:NM_014324:exon5:c.1148delinsCTA:p.<span class="pp">*</span>383delinsSNFQAHGSSEFEYCIYSVE<span class="pp">*</span>     .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       . ..       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       . ..       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       . ..       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       . ..       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       . ..       .       .       .       .       .       .       .       .</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33989146        33989146        G       A       exonic  AMACR   .       stopgain        AMACR:NM_001167595:exon5:c.C1096T:p.Q366X,AMACR:NM_014324:exon5:c.C1096T:p.Q366X   .       .       .       .       .       .       .       .       .       .       .       .       0.039   0.242   N       1       0.810      D       .       .       .       .       .       .       .       .       .       0.73    0.821   .       .       .       .       .       .       . ..       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       0.378   0.886      D       0.305   0.884   D       .       .       .       .       .       .       .<span class="kw">;</span><span class="ex">Recessive</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>  <span class="bu">.</span><span class="kw">;</span><span class="ex">High</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>       <span class="ex">6.974</span>   0.970   36      0.968   0.310      0.848   0.439   D       0.302   0.410   N       0.454   0.645   0.225   0.512   1.000   0.432   0.745   0.986   0       .       .       5.51    2.48       0.292   0.846   0.273   1.176   0.789   0.657   0.282   0.722   0.314   8.737   0.337   .<span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span>   .       .       .       .       .       .       .  </span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33989176        33989176        C       A       exonic  AMACR   .       stopgain        AMACR:NM_001167595:exon5:c.G1066T:p.E356X,AMACR:NM_014324:exon5:c.G1066T:p.E356X   .       .       .       .       .       .       .       .       .       .       .       .       0.000   0.843   D       1       0.810      A       .       .       .       .       .       .       .       .       .       0.811   0.829   .       .       .       .       .       .       . ..       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       0.622   0.988      D       0.656   0.987   D       .       .       .       .       .       .       .<span class="kw">;</span><span class="ex">Recessive</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>  <span class="bu">.</span><span class="kw">;</span><span class="ex">High</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>       <span class="ex">7.610</span>   0.981   38      0.997   0.841      0.987   0.854   D       0.130   0.248   N       1.106   0.982   0.955   0.975   1.0     0.983   0.732   0.924   0       .       .       5.6     5.60.850   5.893   0.695   1.026   0.459   1.000   0.716   0.992   0.541   19.980  0.973   .<span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span>   .       .       .       .       .       .       .</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33989301        33989301        G       T       exonic  AMACR   .       stopgain        AMACR:NM_001167595:exon5:c.C941A:p.S314X,AMACR:NM_014324:exon5:c.C941A:p.S314X     .       .       .       .       .       .       .       .       .       .       .       .       0.000   0.843   D       1       0.810      A       .       .       .       .       .       .       .       .       .       0.849   0.900   .       .       .       .       .       .       . ..       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       0.611   0.980      D       0.656   0.987   D       .       .       .       .       .       .       .<span class="kw">;</span><span class="ex">Recessive</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>  <span class="bu">.</span><span class="kw">;</span><span class="ex">High</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>       <span class="ex">7.794</span>   0.984   39      0.996   0.756      0.994   0.953   D       0.309   0.416   N       0.960   0.944   0.827   0.916   1.0     0.983   0.651   0.469   0       .       .       5.6     5.60.850   9.625   0.978   1.176   0.789   1.000   0.716   0.667   0.302   19.980  0.973   .<span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span>   .       .       .       .       .       .       .</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33989393        33989393        C       T       exonic  AMACR   .       stopgain        AMACR:NM_001167595:exon5:c.G849A:p.W283X,AMACR:NM_014324:exon5:c.G849A:p.W283X     .       .       .       .       .       .       .       .       .       .       .       .       0.000   0.843   D       1       0.810      A       .       .       .       .       .       .       .       .       .       0.841   0.899   .       .       .       .       .       .       . ..       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       0.622   0.988      D       0.656   0.987   D       .       .       .       .       .       .       .<span class="kw">;</span><span class="ex">Recessive</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>  <span class="bu">.</span><span class="kw">;</span><span class="ex">High</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>       <span class="ex">8.214</span>   0.990   41      0.997   0.815      0.988   0.864   D       0.312   0.418   N       0.992   0.955   0.887   0.950   1.0     0.983   0.732   0.924   0       .       .       5.7     5.70.887   7.611   0.822   1.026   0.459   1.000   0.716   0.998   0.659   20.200  0.983   .<span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span>   .       .       1355367 Alpha-methylacyl-CoA_racemase_deficiency   MONDO:MONDO:0013681,MedGen:C3280428,OMIM:614307,Orphanet:79095  criteria_provided,_single_submitter     Uncertain_significance</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33989434        33989434        T       A       exonic  AMACR   .       stopgain        AMACR:NM_001167595:exon5:c.A808T:p.K270X,AMACR:NM_014324:exon5:c.A808T:p.K270X     .       .       .       .       .       .       .       .       .       .       .       .       0.082   0.208   N       1       0.810      A       .       .       .       .       .       .       .       .       .       0.729   0.754   .       .       .       .       .       .       . ..       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       0.441   0.921      D       0.578   0.964   D       .       .       .       .       .       .       .<span class="kw">;</span><span class="ex">Recessive</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>  <span class="bu">.</span><span class="kw">;</span><span class="ex">High</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>       <span class="ex">7.311</span>   0.976   37      0.994   0.629      0.905   0.517   D       0.291   0.402   N       0.380   0.604   0.235   0.518   1.000   0.490   0.732   0.924   0       .       .       5.7     3.25       0.364   1.649   0.369   <span class="at">-0.631</span>  0.045   0.919   0.319   0.616   0.292   8.170   0.304   .<span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span>   .       .       .       .       .       .       .  </span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33989482        33989482        C       A       exonic  AMACR   .       stopgain        AMACR:NM_001167595:exon5:c.G760T:p.E254X,AMACR:NM_014324:exon5:c.G760T:p.E254X     .       .       .       .       .       .       .       .       .       .       .       .       0.000   0.629   D       1       0.810      A       .       .       .       .       .       .       .       .       .       0.709   0.887   .       .       .       .       .       .       . ..       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       .       0.607   0.979      D       0.635   0.978   D       .       .       .       .       .       .       .<span class="kw">;</span><span class="ex">Recessive</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>  <span class="bu">.</span><span class="kw">;</span><span class="ex">High</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>       <span class="ex">7.977</span>   0.987   40      0.997   0.820      0.960   0.670   D       0.240   0.362   N       0.927   0.930   0.766   0.873   1.000   0.748   0.732   0.924   0       .       .       5.84    4.97       0.654   1.881   0.393   1.026   0.459   0.912   0.317   0.913   0.385   11.608  0.503   .<span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span>   .       .       .       .       .       .       .  </span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33989496        33989496        C       T       exonic  AMACR   .       stopgain        AMACR:NM_203382:exon4:c.G585A:p.W195X   0.328   0.176   T 0.173    0.321   T       0.01    0.155   B       0.021   0.193   B       0.000   0.513   D       1       0.810   D       2.32    0.664   M       0.17    0.605      T       <span class="at">-4.03</span>   0.743   D       0.142   0.291   <span class="at">-0.584</span>  0.655   T       0.271   0.642   T       0.355   0.523   T       .       .       .       0.172      0.441   0.635   0.771   0.795   0.793   0.072   0.080   0.411   0.266   T       0.274   0.647   T       <span class="at">-0.120</span>  0.332   T       <span class="at">-0.409</span>  0.323   T 0.581    0.357   D       0.749   0.370   T       .<span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>  <span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>  <span class="ex">0.991</span>   0.149   11.50   0.987   0.451   0.849   0.440   D       0.725   0.674   D       <span class="at">-0.011</span>     0.414   0.003   0.399   1.000   0.748   0.732   0.924   0       .       .       5.84    4.08    0.469   1.591   0.363   <span class="at">-0.710</span>  0.039   0.826   0.301      0.757   0.323   10.110  0.417   .<span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span>   .       .       .       .       .       .       .</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    33998657        33998657        G       C       exonic  AMACR   .       stopgain        AMACR:NM_001167595:exon4:c.C723G:p.Y241X,AMACR:NM_014324:exon4:c.C723G:p.Y241X     0.0     0.913   D       0.0     0.928   D       0.016   0.173   B       0.018   0.185   B       .       .       .       1       0.810      A       .       .       .       <span class="at">-0.3</span>    0.679   T       3.54    0.001   N       0.301   0.420   <span class="at">-0.963</span>  0.386   T       0.089   0.343   T       0.317      0.491   T       .       .       .       0.250   0.563   0.57    0.693   0.559   0.556   .       .       .       .       .       0.012   0.106   T 0.056    0.591   T       <span class="at">-0.157</span>  0.586   T       0.545   0.343   D       0.394   0.099   T       .<span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>    <span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>    <span class="ex">5.532</span>   0.947   34      0.969   0.314   0.139      0.181   N       0.693   0.652   D       <span class="at">-0.612</span>  0.186   <span class="at">-1.009</span>  0.096   1.000   0.748   0.706   0.612   0       .       .       5.34    <span class="at">-6.09</span>   0.020      0.202   0.171   <span class="at">-0.707</span>  0.039   0.005   0.170   0.051   0.171   15.105  0.720   .<span class="kw">;</span><span class="bu">.</span>     .       .       .       .       .       .       .</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>头两条变异记录是 AMACR 基因中的 <strong>stoploss</strong> 类型变异，属于关注的 Loss-of-function（LoF）变异之一。我们来逐字段解析第一条记录的含义：</p>
+<hr>
+</section>
+</section>
+<section id="第一条变异详解" class="level2">
+<h2 class="anchored" data-anchor-id="第一条变异详解">🧬 第一条变异详解</h2>
+<pre><code>chr5    33989093    33989093    T   G   exonic  AMACR   .   stoploss    AMACR:NM_014324:exon5:c.A1149C:p.X383Y  ...</code></pre>
+<section id="关键信息字段解释" class="level3">
+<h3 class="anchored" data-anchor-id="关键信息字段解释">🔑 关键信息字段解释：</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Chr</code></td>
+<td>chr5</td>
+<td>染色体 5</td>
+</tr>
+<tr class="even">
+<td><code>Start/End</code></td>
+<td>33989093</td>
+<td>变异位置</td>
+</tr>
+<tr class="odd">
+<td><code>Ref</code> → <code>Alt</code></td>
+<td>T → G</td>
+<td>T 被替换为 G</td>
+</tr>
+<tr class="even">
+<td><code>Func.refGene</code></td>
+<td>exonic</td>
+<td>变异发生在外显子区域</td>
+</tr>
+<tr class="odd">
+<td><code>Gene.refGene</code></td>
+<td>AMACR</td>
+<td>受影响的基因是 AMACR</td>
+</tr>
+<tr class="even">
+<td><code>ExonicFunc.refGene</code></td>
+<td>stoploss</td>
+<td>终止密码子丢失，可能导致蛋白延长</td>
+</tr>
+<tr class="odd">
+<td><code>AAChange.refGene</code></td>
+<td>AMACR:NM_014324:exon5:c.A1149C:p.X383Y</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>转录本：NM_014324<br>
+</li>
+<li>外显子：第 5 个外显子<br>
+</li>
+<li>cDNA 变异：第 1149 位 A → C<br>
+</li>
+<li>蛋白变异：原本的终止密码子（X）变成了酪氨酸（Y），即 <strong>终止丢失，蛋白延长</strong></li>
+</ul>
+<hr>
+</section>
+<section id="功能预测字段部分" class="level3">
+<h3 class="anchored" data-anchor-id="功能预测字段部分">🧪 功能预测字段（部分）</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>SIFT_pred</code> (13)</td>
+<td>D</td>
+<td>Deleterious（有害）</td>
+</tr>
+<tr class="even">
+<td><code>PolyPhen2_HVAR_pred</code> (22)</td>
+<td>D</td>
+<td>Probably damaging（可能有害）</td>
+</tr>
+<tr class="odd">
+<td><code>MutationAssessor_pred</code> (31)</td>
+<td>H</td>
+<td>High（高影响）</td>
+</tr>
+<tr class="even">
+<td><code>MetaSVM_pred</code> (42)</td>
+<td>D</td>
+<td>Deleterious</td>
+</tr>
+</tbody>
+</table>
+<p>✅ <strong>四个算法一致预测该变异为有害</strong>，支持其潜在致病性。</p>
+<hr>
+</section>
+<section id="clinvar-注释字段末尾" class="level3">
+<h3 class="anchored" data-anchor-id="clinvar-注释字段末尾">🧬 ClinVar 注释字段（末尾）</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 37%">
+<col style="width: 25%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>CLNSIG</code> (122)</td>
+<td>Uncertain_significance</td>
+<td>临床意义不确定</td>
+</tr>
+<tr class="even">
+<td><code>CLNDN</code> (119)</td>
+<td>not_provided</td>
+<td>未提供具体疾病名称</td>
+</tr>
+<tr class="odd">
+<td><code>CLNREVSTAT</code> (121)</td>
+<td>criteria_provided,_single_submitter</td>
+<td>有提交者提供标准，但仅一个提交者，可信度中等偏低</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+<section id="生物学解读" class="level2">
+<h2 class="anchored" data-anchor-id="生物学解读">🧠 生物学解读</h2>
+<p>这条变异：</p>
+<ul>
+<li>是 <strong>stoploss</strong> 类型，终止密码子被替换，蛋白延长，可能导致功能异常或毒性蛋白</li>
+<li>多个算法一致预测其为有害（SIFT、PolyPhen2、MutationAssessor、MetaSVM）</li>
+<li>ClinVar 标注为 “临床意义不确定”，说明目前尚无明确临床证据支持其致病性，但已有提交者报告</li>
+</ul>
+<p>🧬 <strong>结论：这是一个值得关注的潜在致病变异，尤其在研究 AMACR 功能或疾病机制时应进一步验证其影响。</strong></p>
+<hr>
+<p>为了筛选出 <strong>同时在 gnomAD 和 ClinVar 中被标记为 “Pathogenic” 或 “Likely pathogenic” 的变异</strong>，我们可以从已经完成的 ANNOVAR 注释结果中提取这些信息。以下是完整的筛选逻辑和解释：</p>
+<hr>
+</section>
+<section id="目标定义" class="level2">
+<h2 class="anchored" data-anchor-id="目标定义">🎯 目标定义</h2>
+<p>我们要找出满足以下两个条件的变异：</p>
+<ol type="1">
+<li><strong>来源于 gnomAD 数据集</strong>（已经用 AMACR.avinput 提供并注释）</li>
+<li><strong>ClinVar 注释中包含 “Pathogenic” 或 “Likely pathogenic”</strong>（字段为 <code>CLNSIG</code>）</li>
+</ol>
+<hr>
+</section>
+<section id="筛选命令基于-multianno.txt" class="level2">
+<h2 class="anchored" data-anchor-id="筛选命令基于-multianno.txt">✅ 筛选命令（基于 multianno.txt）</h2>
+<p>已经确认 <code>CLNSIG</code> 在第 <strong>122 列</strong>，所以可以使用：</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">awk</span> <span class="at">-F</span><span class="st">'\t'</span> <span class="st">'$122 ~ /Pathogenic|Likely pathogenic/'</span> AMACR_anno.hg38_multianno.txt <span class="op">&gt;</span> AMACR_gnomAD_clinvar_pathogenic.txt</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>这将输出所有 gnomAD 中的 AMACR 变异，且 ClinVar 标记为致病或可能致病。</p>
+<hr>
+</section>
+<section id="解读建议" class="level2">
+<h2 class="anchored" data-anchor-id="解读建议">🔍 解读建议</h2>
+<p>可以查看筛选结果的前几行：</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jayz@localhost:/mnt/e/acode/homwwork/data$</span> head AMACR_gnomAD_clinvar_pathogenic.txt</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    34005827        34005827        A       G       exonic  AMACR   .       nonsynonymous SNV       AMACR:NM_001167595:exon2:c.T320C:p.L107P,AMACR:NM_014324:exon2:c.T320C:p.L107P,AMACR:NM_203382:exon2:c.T320C:p.L107P      0.001   0.913   D       0.001   0.834   D       1.0     0.906   D       0.998   0.886   D       0.000   0.843   D       1       0.810     A       3.95    0.964   H       0.36    0.579   T       <span class="at">-6.55</span>   0.930   D       0.978   0.988   0.267   0.870   D       0.461   0.791   T       0.984   0.986   D       0.111     0.789   D       0.646   0.868   0.963   0.996   0.889   0.888   0.436   0.437   0.656   0.608   T       0.475   0.806   T       0.287   0.819   D       0.271   0.867   D0.999    0.944   D       0.990   0.966   D       .<span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>  <span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>  <span class="ex">4.122</span>   0.829   27.9    0.999   0.974   0.941   0.601   D       0.799   0.725   D       0.816   0.871     0.695   0.820   1.000   0.748   0.706   0.612   0       .       .       5.46    4.26    0.498   6.928   0.757   1.307   0.885   1.000   0.716   0.998   0.659   11.827  0.515     .<span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span>   .       .       20563   Congenital_bile_acid_synthesis_defect_4 MONDO:MONDO:0008967,MedGen:C1858328,OMIM:214950,Orphanet:79095  no_assertion_criteria_provided    Pathogenic</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="ex">chr5</span>    34007866        34007866        A       G       exonic  AMACR   .       nonsynonymous SNV       AMACR:NM_001167595:exon1:c.T154C:p.S52P,AMACR:NM_014324:exon1:c.T154C:p.S52P,AMACR:NM_203382:exon1:c.T154C:p.S52P 0.002   0.785   D       0.003   0.794   D       0.999   0.779   D       0.95    0.736   D       0.000   0.843   D       1       0.810   A4.175    0.977   H       0.27    0.592   T       <span class="at">-4.6</span>    0.799   D       0.506   0.785   0.442   0.897   D       0.525   0.823   D       0.376   0.539   T       0.542   0.957   D0.741    0.911   .       .       0.850   0.848   2.117   0.950   0.724   0.706   T       0.514   0.829   D       0.183   0.723   D       0.398   0.920   D       0.671   0.394   D0.912    0.903   D       .<span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>  <span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span>  <span class="ex">4.176</span>   0.847   28.4    0.999   0.933   0.929   0.568   D       0.976   0.996   D       0.885   0.910   0.753   0.864   1.0       0.983   0.267   0.048   1       .       .       4.96    4.96    0.652   6.119   0.713   1.307   0.885   1.000   0.716   0.988   0.511   13.664  0.619   .<span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span><span class="kw">;</span><span class="bu">.</span>   ..20562   AMACR-related_disorder<span class="kw">|</span><span class="ex">not_provided</span><span class="kw">|</span><span class="ex">Inborn_genetic_diseases</span><span class="kw">|</span><span class="ex">Alpha-methylacyl-CoA_racemase_deficiency</span><span class="kw">|</span><span class="ex">Congenital_bile_acid_synthesis_defect_4</span>    .<span class="kw">|</span><span class="ex">MedGen:C3661900</span><span class="kw">|</span><span class="ex">MeSH:D030342,MedGen:C0950123</span><span class="kw">|</span><span class="ex">MONDO:MONDO:0013681,MedGen:C3280428,OMIM:614307,Orphanet:79095</span><span class="kw">|</span><span class="ex">MONDO:MONDO:0008967,MedGen:C1858328,OMIM:214950,Orphanet:79095</span>      criteria_provided,_multiple_submitters,_no_conflicts      Pathogenic/Likely_pathogenic</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="变异-1chr534005827-ag" class="level2">
+<h2 class="anchored" data-anchor-id="变异-1chr534005827-ag">🧬 变异 1：chr5:34005827 A&gt;G</h2>
+<section id="基本信息" class="level3">
+<h3 class="anchored" data-anchor-id="基本信息">🔑 基本信息</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>染色体位置</td>
+<td>chr5:34005827</td>
+</tr>
+<tr class="even">
+<td>Ref/Alt</td>
+<td>A → G</td>
+</tr>
+<tr class="odd">
+<td>区域</td>
+<td>exonic（外显子）</td>
+</tr>
+<tr class="even">
+<td>功能类型</td>
+<td>nonsynonymous SNV（错义突变）</td>
+</tr>
+<tr class="odd">
+<td>氨基酸变化</td>
+<td>p.L107P（亮氨酸变为脯氨酸）</td>
+</tr>
+<tr class="even">
+<td>影响转录本</td>
+<td>NM_001167595, NM_014324, NM_203382（全部 exon2）</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="功能预测一致性" class="level3">
+<h3 class="anchored" data-anchor-id="功能预测一致性">🧪 功能预测一致性</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>算法</th>
+<th>预测结果</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>SIFT</td>
+<td>D（Deleterious）</td>
+</tr>
+<tr class="even">
+<td>PolyPhen2_HVAR</td>
+<td>D（Probably damaging）</td>
+</tr>
+<tr class="odd">
+<td>MutationAssessor</td>
+<td>H（High）</td>
+</tr>
+<tr class="even">
+<td>MetaSVM</td>
+<td>D（Deleterious）</td>
+</tr>
+</tbody>
+</table>
+<p>✅ <strong>四个算法一致预测为有害突变</strong>，支持其致病性。</p>
+</section>
+<section id="clinvar-注释" class="level3">
+<h3 class="anchored" data-anchor-id="clinvar-注释">🧬 ClinVar 注释</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CLNSIG</td>
+<td>Pathogenic</td>
+</tr>
+<tr class="even">
+<td>CLNDN</td>
+<td>Congenital bile acid synthesis defect 4</td>
+</tr>
+<tr class="odd">
+<td>CLNDISDB</td>
+<td>MONDO, MedGen, OMIM, Orphanet 多数据库一致标注</td>
+</tr>
+<tr class="even">
+<td>提交状态</td>
+<td>no_assertion_criteria_provided（未提供评估标准）</td>
+</tr>
+</tbody>
+</table>
+<p>🧠 <strong>解读</strong>：该变异已被 ClinVar 标记为致病，关联疾病为 <strong>胆汁酸合成缺陷症 4 型</strong>，但提交者未提供详细评估标准，可信度中等。</p>
+<hr>
+</section>
+</section>
+<section id="变异-2chr534007866-ag" class="level2">
+<h2 class="anchored" data-anchor-id="变异-2chr534007866-ag">🧬 变异 2：chr5:34007866 A&gt;G</h2>
+<section id="基本信息-1" class="level3">
+<h3 class="anchored" data-anchor-id="基本信息-1">🔑 基本信息</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>染色体位置</td>
+<td>chr5:34007866</td>
+</tr>
+<tr class="even">
+<td>Ref/Alt</td>
+<td>A → G</td>
+</tr>
+<tr class="odd">
+<td>区域</td>
+<td>exonic</td>
+</tr>
+<tr class="even">
+<td>功能类型</td>
+<td>nonsynonymous SNV</td>
+</tr>
+<tr class="odd">
+<td>氨基酸变化</td>
+<td>p.S52P（丝氨酸变为脯氨酸）</td>
+</tr>
+<tr class="even">
+<td>影响转录本</td>
+<td>exon1 of NM_001167595, NM_014324, NM_203382</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="功能预测一致性-1" class="level3">
+<h3 class="anchored" data-anchor-id="功能预测一致性-1">🧪 功能预测一致性</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>算法</th>
+<th>预测结果</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>SIFT</td>
+<td>D</td>
+</tr>
+<tr class="even">
+<td>PolyPhen2_HVAR</td>
+<td>D</td>
+</tr>
+<tr class="odd">
+<td>MutationAssessor</td>
+<td>H</td>
+</tr>
+<tr class="even">
+<td>MetaSVM</td>
+<td>D</td>
+</tr>
+</tbody>
+</table>
+<p>✅ 同样是 <strong>四算法一致预测为有害突变</strong></p>
+</section>
+<section id="clinvar-注释-1" class="level3">
+<h3 class="anchored" data-anchor-id="clinvar-注释-1">🧬 ClinVar 注释</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>字段</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CLNSIG</td>
+<td>Pathogenic/Likely pathogenic</td>
+</tr>
+<tr class="even">
+<td>CLNDN</td>
+<td>多疾病标注，包括 AMACR-related disorder、Alpha-methylacyl-CoA racemase deficiency 等</td>
+</tr>
+<tr class="odd">
+<td>提交状态</td>
+<td>criteria_provided,_multiple_submitters,_no_conflicts（多提交者，无冲突）</td>
+</tr>
+</tbody>
+</table>
+<p>🧠 <strong>解读</strong>：该变异被多个提交者一致标注为致病或可能致病，可信度高，关联多个 AMACR 相关疾病。</p>
+<hr>
+</section>
+</section>
+<section id="总结与建议" class="level2">
+<h2 class="anchored" data-anchor-id="总结与建议">📊 总结与建议</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 16%">
+<col style="width: 20%">
+<col style="width: 19%">
+<col style="width: 16%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>变异位置</th>
+<th>氨基酸变化</th>
+<th>功能预测一致</th>
+<th>ClinVar标注</th>
+<th>疾病关联</th>
+<th>可信度</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>chr5:34005827</td>
+<td>p.L107P</td>
+<td>✅ 是</td>
+<td>Pathogenic</td>
+<td>胆汁酸合成缺陷症4型</td>
+<td>中等</td>
+</tr>
+<tr class="even">
+<td>chr5:34007866</td>
+<td>p.S52P</td>
+<td>✅ 是</td>
+<td>Pathogenic/Likely pathogenic</td>
+<td>多种AMACR相关疾病</td>
+<td>高</td>
+</tr>
+</tbody>
+</table>
+<p>这两条变异都非常值得关注，尤其是第二条，具有更强的临床支持和算法一致性。</p>
+<p>筛选结果中只有两条 ClinVar 标记为 “Pathogenic” 或 “Likely pathogenic” 的 AMACR 变异，这在生物信息学分析中是<strong>完全合理的</strong>，原因如下：</p>
+<hr>
+</section>
+<section id="为什么只有两条是合理的" class="level2">
+<h2 class="anchored" data-anchor-id="为什么只有两条是合理的">🧬 为什么只有两条是合理的？</h2>
+<section id="clinvar-是临床数据库不是人群数据库" class="level3">
+<h3 class="anchored" data-anchor-id="clinvar-是临床数据库不是人群数据库">1. <strong>ClinVar 是临床数据库，不是人群数据库</strong></h3>
+<ul>
+<li>ClinVar 收录的是 <strong>已知临床病例</strong> 中的变异，通常是经过实验验证或医生提交的。</li>
+<li>绝大多数 gnomAD 中的变异是在人群中观察到的，很多是 <strong>良性或意义不明</strong>，不会出现在 ClinVar 的致病列表中。</li>
+</ul>
+</section>
+<section id="amacr-是一个小基因" class="level3">
+<h3 class="anchored" data-anchor-id="amacr-是一个小基因">2. <strong>AMACR 是一个小基因</strong></h3>
+<ul>
+<li>AMACR（Alpha-methylacyl-CoA racemase）基因长度不大，外显子数量有限。</li>
+<li>致病变异集中在某些关键区域，数量本身就少。</li>
+</ul>
+</section>
+<section id="clinvar-标注非常严格" class="level3">
+<h3 class="anchored" data-anchor-id="clinvar-标注非常严格">3. <strong>ClinVar 标注非常严格</strong></h3>
+<ul>
+<li>只有经过临床验证、文献支持、专家评审的变异才会被标记为 “Pathogenic”。</li>
+<li>很多变异即使预测为有害，也可能被标注为 “Uncertain significance” 或 “Conflicting interpretations”。</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="对比参考clinvar-中常见变异数量" class="level2">
+<h2 class="anchored" data-anchor-id="对比参考clinvar-中常见变异数量">📊 对比参考：ClinVar 中常见变异数量</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>基因</th>
+<th>ClinVar 致病变异数量</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>BRCA1</td>
+<td>数百条</td>
+<td>高度研究的乳腺癌基因</td>
+</tr>
+<tr class="even">
+<td>CFTR</td>
+<td>数百条</td>
+<td>囊性纤维化相关基因</td>
+</tr>
+<tr class="odd">
+<td>AMACR</td>
+<td>仅几条</td>
+<td>罕见病相关，研究较少</td>
+</tr>
+</tbody>
+</table>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="ex">jayz@localhost:/mnt/e/acode/homwwork/data$</span> ls</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="ex">AMACR.avinput</span>                  AMACR_anno.invalid_input          AMACR_gnomAD_clinvar_pathogenic.txt  gnomAD_v4.1.0_ENSG00000242110_2025_10_20_16_17_02.csv</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="ex">AMACR_LOF_detailed.txt</span>         AMACR_anno.refGene.invalid_input  annovar.latest</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="ex">AMACR_anno.hg38_multianno.txt</span>  AMACR_fixed.avinput               clinvar.vcf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+</section>
+<section id="生物学意义" class="level2">
+<h2 class="anchored" data-anchor-id="生物学意义">🧠 生物学意义</h2>
+<p>这些变异是：</p>
+<ul>
+<li>在人群中观察到（gnomAD）</li>
+<li>并且在临床数据库中被报告为致病（ClinVar）</li>
+</ul>
+<p>这类变异具有 <strong>最高可信度</strong>，适合用于：</p>
+<ul>
+<li>临床报告</li>
+<li>遗传咨询</li>
+<li>疾病机制研究</li>
+</ul>
+<hr>
+<hr>
+</section>
+</section>
+<section id="分析" class="level1">
+<h1>分析</h1>
+<hr>
+<section id="一整体目标是什么" class="level2">
+<h2 class="anchored" data-anchor-id="一整体目标是什么">🧬 一、整体目标是什么？</h2>
+<p>现在要做的是：</p>
+<blockquote class="blockquote">
+<p>“拿到一个基因（AMACR）在 gnomAD 和 ClinVar 上的变异，然后分析哪些变异可能致病。”</p>
+</blockquote>
+<p>换句话说，要做三件事：</p>
+<ol type="1">
+<li><strong>确定哪些变异是功能丧失（Loss-of-function, LoF）；</strong></li>
+<li><strong>确定哪些错义突变在多个算法预测下一致认为有害；</strong></li>
+<li><strong>确定哪些 ClinVar 已经被临床验证为致病或可能致病。</strong></li>
+</ol>
+<p>这些信息散落在不同的数据库中，我们要通过工具把它们统一、整理、整合成一张结果表。</p>
+<hr>
+</section>
+<section id="二为什么有这么多文件每个文件和工具干嘛的" class="level2">
+<h2 class="anchored" data-anchor-id="二为什么有这么多文件每个文件和工具干嘛的">🧩 二、为什么有这么多文件？每个文件和工具干嘛的？</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 32%">
+<col style="width: 17%">
+<col style="width: 41%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>类别</th>
+<th>名称/路径</th>
+<th>功能作用</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>🧪 <strong>输入数据</strong></td>
+<td><code>gnomAD_v4.1.0_ENSG00000242110_...csv</code></td>
+<td>来自 gnomAD 的 AMACR 变异数据</td>
+<td>gnomAD 是“人群变异数据库”，告诉某个位点的突变在人群中出现频率多高</td>
+</tr>
+<tr class="even">
+<td>🧪 <strong>输入数据</strong></td>
+<td><code>clinvar.vcf</code></td>
+<td>来自 ClinVar 的临床变异数据</td>
+<td>ClinVar 是“临床致病性数据库”，记录每个变异的临床意义（致病/良性等）</td>
+</tr>
+<tr class="odd">
+<td>⚙️ <strong>工具程序</strong></td>
+<td><code>table_annovar.pl</code>, <code>convert2annovar.pl</code></td>
+<td>ANNOVAR 的核心脚本</td>
+<td>用来把原始变异文件转换并进行注释</td>
+</tr>
+<tr class="even">
+<td>📚 <strong>数据库</strong></td>
+<td><code>humandb/hg38_refGeneWithVer.txt</code></td>
+<td>RefSeq 基因注释数据库</td>
+<td>告诉 ANNOVAR：每个变异属于哪个基因、在哪个外显子、是不是错义或终止</td>
+</tr>
+<tr class="odd">
+<td>📚 <strong>数据库</strong></td>
+<td><code>dbNSFP</code></td>
+<td>蛋白功能预测数据库</td>
+<td>包含 SIFT、PolyPhen2、MutationAssessor、MetaSVM 等算法的预测分值</td>
+</tr>
+<tr class="even">
+<td>📚 <strong>数据库</strong></td>
+<td><code>clinvar_*.txt</code>（ANNOVAR 格式）</td>
+<td>ClinVar 注释数据库</td>
+<td>用于注释变异是否在 ClinVar 中被标注为致病</td>
+</tr>
+<tr class="odd">
+<td>🧮 <strong>参考序列</strong></td>
+<td><code>hg38_refGeneWithVerMrna.fa</code></td>
+<td>基因的转录本序列</td>
+<td>当 ANNOVAR 要判断错义突变是哪种氨基酸替换时会用到</td>
+</tr>
+<tr class="even">
+<td>🧾 <strong>输出结果</strong></td>
+<td><code>AMACR_anno.hg38_multianno.txt</code></td>
+<td>全部注释结果</td>
+<td>ANNOVAR 把上面这些数据库信息都整合进来生成的表格</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="三逻辑流程从生物学角度理解" class="level2">
+<h2 class="anchored" data-anchor-id="三逻辑流程从生物学角度理解">🧠 三、逻辑流程（从生物学角度理解）</h2>
+<p>可以把整个流程想象成这样：</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 28%">
+<col style="width: 49%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>阶段</th>
+<th>生物学含义</th>
+<th>ANNOVAR的作用</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>🧍‍♀️ <strong>1. 我们是谁？</strong></td>
+<td>一个变异到底在基因的哪个地方？外显子？内含子？</td>
+<td>通过 <code>refGene</code> 数据库来确定变异位置与功能（错义、无义、剪切、移码等）</td>
+</tr>
+<tr class="even">
+<td>🔬 <strong>2. 我们危险吗？</strong></td>
+<td>如果变异改变了蛋白结构，它可能致病吗？</td>
+<td>通过 <code>dbNSFP</code> 数据库调用多种算法预测蛋白功能受损的可能性</td>
+</tr>
+<tr class="odd">
+<td>🏥 <strong>3. 医生怎么说？</strong></td>
+<td>这个变异是否在临床上被报告为致病？</td>
+<td>通过 <code>ClinVar</code> 数据库查询该位点的临床致病性</td>
+</tr>
+<tr class="even">
+<td>🧾 <strong>4. 结果整合</strong></td>
+<td>把生物学预测 + 临床证据合并</td>
+<td>通过 Python 等工具汇总最终可疑致病突变</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="四每个数据库背后的科学思想" class="level2">
+<h2 class="anchored" data-anchor-id="四每个数据库背后的科学思想">🧬 四、每个数据库背后的科学思想</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 45%">
+<col style="width: 43%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>数据库</th>
+<th>背景</th>
+<th>核心用途</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>gnomAD</strong></td>
+<td>全球最大人群变异频率数据库，告诉你“这个突变在人群中多常见”。常见变异通常是良性。</td>
+<td>过滤掉常见的良性突变。</td>
+</tr>
+<tr class="even">
+<td><strong>ClinVar</strong></td>
+<td>来自真实临床病例和实验验证。</td>
+<td>直接提供“pathogenic”、“likely pathogenic”等标签。</td>
+</tr>
+<tr class="odd">
+<td><strong>RefGene</strong></td>
+<td>来自 RefSeq 的官方基因注释。</td>
+<td>确定变异影响的基因与外显子结构。</td>
+</tr>
+<tr class="even">
+<td><strong>dbNSFP</strong></td>
+<td>综合计算预测数据库。收录十几种算法（SIFT、PolyPhen、MetaSVM…）。</td>
+<td>对错义变异进行功能预测。</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+<section id="五annovar-是怎么整合这些数据库的" class="level2">
+<h2 class="anchored" data-anchor-id="五annovar-是怎么整合这些数据库的">🧩 五、ANNOVAR 是怎么整合这些数据库的？</h2>
+<p>可以理解为：</p>
+<blockquote class="blockquote">
+<p>ANNOVAR 就像一个“生物信息学版的 Excel VLOOKUP 函数” 它拿着你的变异坐标（染色体、位置、ref、alt）， 然后在各个数据库中“查表匹配”，把对应信息整合成一行。</p>
+</blockquote>
+<p>最终得到的表格里，每一行代表一个变异，每一列代表一个数据库的注释信息：</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 3%">
+<col style="width: 9%">
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 13%">
+<col style="width: 20%">
+<col style="width: 12%">
+<col style="width: 21%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Chr</th>
+<th>Pos</th>
+<th>Ref</th>
+<th>Alt</th>
+<th>Gene.refGene</th>
+<th>ExonicFunc.refGene</th>
+<th>SIFT_pred</th>
+<th>PolyPhen2_HVAR_pred</th>
+<th>CLNSIG</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>5</td>
+<td>33986185</td>
+<td>G</td>
+<td>A</td>
+<td>AMACR</td>
+<td>stopgain</td>
+<td>deleterious</td>
+<td>probably_damaging</td>
+<td>Pathogenic</td>
+</tr>
+</tbody>
+</table>
+<hr>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

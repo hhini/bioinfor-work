@@ -1,0 +1,762 @@
+## load文件
+
+第一步就是在 R 中加载这两个 GWAS 结果文件并查看它们的结构。
+
+``` r
+# 设置文件路径
+file1 <- "D:/acode/homework/data/乳腺摄影密度GWAS/乳腺摄影密度GWAS.txt"
+file2 <- "D:/acode/homework/data/抑郁GWAS.txt"
+
+# 加载数据
+gwas1 <- read.table(file1, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+gwas2 <- read.table(file2, header = TRUE, sep = "\t", stringsAsFactors = FALSE)
+
+# 查看数据结构
+cat("乳腺摄影密度 GWAS 文件结构:\n")
+str(gwas1)
+head(gwas1)
+
+cat("\n抑郁 GWAS 文件结构:\n")
+str(gwas2)
+head(gwas2)
+```
+
+得到
+
+``` r
+乳腺摄影密度 GWAS 文件结构:
+'data.frame':   10150283 obs. of  13 variables:
+ $ MarkerName: chr  "1:10583:G:A" "1:10616:CCGCCGTTGCAAAGGCGCGCCG:C" "1:11008:C:G" "1:11012:C:G" ...
+ $ rsid      : chr  "rs58108140" "rs376342519" "1:11008:C:G" "1:11012:C:G" ...
+ $ chr       : int  1 1 1 1 1 1 1 1 1 1 ...
+ $ position  : num  10583 10616 11008 11012 13110 ...
+ $ Allele1   : chr  "g" "c" "g" "g" ...
+ $ Allele2   : chr  "a" "ccgccgttgcaaaggcgcgccg" "c" "c" ...
+ $ freq      : num  0.828 0.99 0.09 0.09 0.949 ...
+ $ info      : num  0.44 0.841 0.571 0.571 0.341 0.386 0.386 0.346 0.485 0.598 ...
+ $ Zscore    : num  -1.138 1.686 -0.938 -0.938 1.302 ...
+ $ Weight    : num  3208 6615 11516 11516 6615 ...
+ $ P.value   : num  0.2551 0.0918 0.3483 0.3483 0.1931 ...
+ $ StudyNo   : int  4 13 24 24 13 24 24 24 5 4 ...
+ $ HetPVal   : num  0.2244 0.0994 0.8971 0.8971 0.1028 ...
+                        MarkerName        rsid chr position Allele1
+1                      1:10583:G:A  rs58108140   1    10583       g
+2 1:10616:CCGCCGTTGCAAAGGCGCGCCG:C rs376342519   1    10616       c
+3                      1:11008:C:G 1:11008:C:G   1    11008       g
+4                      1:11012:C:G 1:11012:C:G   1    11012       g
+5                      1:13110:G:A 1:13110:G:A   1    13110       g
+6                      1:13116:T:G rs201725126   1    13116       g
+                 Allele2      freq  info Zscore Weight P.value StudyNo HetPVal
+1                      a 0.8283444 0.440 -1.138   3208  0.2551       4 0.22440
+2 ccgccgttgcaaaggcgcgccg 0.9900000 0.841  1.686   6615  0.0918      13 0.09944
+3                      c 0.0900000 0.571 -0.938  11516  0.3483      24 0.89710
+4                      c 0.0900000 0.571 -0.938  11516  0.3483      24 0.89710
+5                      a 0.9490000 0.341  1.302   6615  0.1931      13 0.10280
+6                      t 0.1680000 0.386  0.741  11516  0.4588      24 0.13250
+
+抑郁 GWAS 文件结构:
+'data.frame':   8483301 obs. of  1 variable:
+ $ SNP.effect.allele.other.allele.Freq.beta.se.pval: chr  "rs2326918 a g 0.8452 0.0106 0.006 0.07561" "rs7929618 c g 0.1314 -0.0224 0.0064 0.0004804" "rs66941928 t c 0.8031 3e-04 0.0055 0.9502" "rs7190157 a c 0.3517 0.0024 0.0045 0.5992" ...
+  SNP.effect.allele.other.allele.Freq.beta.se.pval
+1        rs2326918 a g 0.8452 0.0106 0.006 0.07561
+2    rs7929618 c g 0.1314 -0.0224 0.0064 0.0004804
+3        rs66941928 t c 0.8031 3e-04 0.0055 0.9502
+4        rs7190157 a c 0.3517 0.0024 0.0045 0.5992
+5        rs12364336 a g 0.8685 0.0075 0.0064 0.245
+6        rs6977693 t c 0.8544 0.0089 0.0061 0.1442
+```
+
+``` r
+print(colnames(gwas1))
+print(colnames(gwas2))
+```
+
+``` r
+ [1] "MarkerName" "rsid"       "chr"        "position"   "Allele1"    "Allele2"    "freq"       "info"      
+ [9] "Zscore"     "Weight"     "P.value"    "StudyNo"    "HetPVal"   
+[1] "SNP.effect.allele.other.allele.Freq.beta.se.pval"
+```
+
+### 说明：
+
+-   `read.table()`：读取 txt 文件，假设是 **制表符分隔**（常见 GWAS 输出格式）。如果是空格分隔，可以改成 `sep = " "`。
+
+-   `header = TRUE`：假设文件有列名。
+
+-   `str()`：查看数据框的结构（列名、类型、行数）。
+
+-   `head()`：查看前几行，确认列名和数据内容。
+
+**抑郁 GWAS 文件 (gwas2)** 其实是把所有列拼在一起作为一个字符串列了，需要重新拆分。原因是 `read.table()` 默认分隔符不对，应该用空格分隔。
+
+### ✅ ：用 read.table() + sep=""（自动识别任意空格）
+
+``` r
+file2 <- "D:/acode/homework/data/抑郁GWAS.txt"
+
+# sep="" 会把任意数量的空格当作分隔符
+gwas2 <- read.table(file2, header = TRUE, sep = "", stringsAsFactors = FALSE, fill = TRUE)
+
+# 查看结构
+str(gwas2)
+head(gwas2)
+```
+
+得到
+
+``` r
+> head(gwas2)
+         SNP effect allele  other allele.1   Freq      beta se
+1  rs2326918      a      g 0.8452   0.0106 0.0060 0.0756100 NA
+2  rs7929618      c      g 0.1314  -0.0224 0.0064 0.0004804 NA
+3 rs66941928      t      c 0.8031   0.0003 0.0055 0.9502000 NA
+4  rs7190157      a      c 0.3517   0.0024 0.0045 0.5992000 NA
+5 rs12364336      a      g 0.8685   0.0075 0.0064 0.2450000 NA
+6  rs6977693      t      c 0.8544   0.0089 0.0061 0.1442000 NA
+  pval
+1   NA
+2   NA
+3   NA
+4   NA
+5   NA
+6   NA
+```
+
+gwas2还是错位，需要解决一下
+
+### Fix 抑郁 GWAS列并标准化到 TwoSampleMR 格式
+
+我们的 gwas2 当前列错位，但实际值对应关系是：
+
+-   V4 = Freq（效应等位基因频率）
+
+-   V5 = beta
+
+-   V6 = se
+
+-   V7 = pval
+
+我们先修复并强制类型：
+
+``` r
+# 修复列名与取值
+gwas2 <- transform(
+  gwas2,
+  SNP  = SNP,
+  effect_allele = effect,
+  other_allele  = allele,
+  eaf  = as.numeric(other),      # 实际是频率
+  beta = as.numeric(allele.1),   # 实际是beta
+  se   = as.numeric(Freq),       # 实际是se
+  pval = as.numeric(beta)        # 实际是p值
+)
+
+# 选择标准列并去NA
+gwas2_std <- gwas2[, c("SNP","effect_allele","other_allele","eaf","beta","se","pval")]
+gwas2_std <- subset(gwas2_std, complete.cases(gwas2_std))
+
+# 可选：过滤极端或无效值
+gwas2_std <- subset(gwas2_std, eaf > 0 & eaf < 1 & se > 0 & pval >= 0 & pval <= 1)
+```
+
+小检验：
+
+``` r
+head(gwas2_std)
+summary(gwas2_std$eaf); summary(gwas2_std$pval)
+```
+
+``` r
+> head(gwas2_std)
++ summary(gwas2_std$eaf); summary(gwas2_std$pval)
+         SNP effect_allele other_allele    eaf    beta     se
+1  rs2326918             a            g 0.8452  0.0106 0.0060
+2  rs7929618             c            g 0.1314 -0.0224 0.0064
+3 rs66941928             t            c 0.8031  0.0003 0.0055
+4  rs7190157             a            c 0.3517  0.0024 0.0045
+5 rs12364336             a            g 0.8685  0.0075 0.0064
+6  rs6977693             t            c 0.8544  0.0089 0.0061
+       pval
+1 0.0756100
+2 0.0004804
+3 0.9502000
+4 0.5992000
+5 0.2450000
+6 0.1442000
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0050  0.0780  0.4002  0.4562  0.8456  0.9950 
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+ 0.0000  0.1771  0.4331  0.4508  0.7120  1.0000 
+```
+
+### Option A：本地暴露 + 本地/IEU结局（需要 gwas1 的 beta/se）
+
+TwoSampleMR 需要至少以下列：
+
+-   snp, effect_allele, other_allele, eaf, beta, se, pval
+
+gwas1 目前为：
+
+-   rsid, Allele1, Allele2, freq, Zscore, P.value, 但缺 beta/se
+
+如果能提供 gwas1 的 beta 与 se（或 OR 和其 se），我们就能用本地数据直接跑
+
+``` r
+library(TwoSampleMR)
+
+# 暴露：乳腺摄影密度（本地），需要我们提供 beta 与 se 列
+exposure_dat <- data.frame(
+  snp = gwas1$rsid,
+  effect_allele = gwas1$Allele1,
+  other_allele  = gwas1$Allele2,
+  eaf = gwas1$freq,
+  beta = gwas1$beta,      # 我们需要确认或添加
+  se   = gwas1$se,        # 我们需要确认或添加
+  pval = gwas1$P.value
+)
+
+# 结局：抑郁（本地，已修复）
+outcome_dat <- data.frame(
+  snp = gwas2_std$SNP,
+  effect_allele = gwas2_std$effect_allele,
+  other_allele  = gwas2_std$other_allele,
+  eaf = gwas2_std$eaf,
+  beta = gwas2_std$beta,
+  se   = gwas2_std$se,
+  pval = gwas2_std$pval
+)
+
+# 选择工具变量：暴露显著SNP
+exposure_iv <- subset(exposure_dat, pval < 5e-8)
+
+# LD clumping（推荐用 IEU clumping；若本地，需提供参考面板。这里示例使用默认）
+exposure_iv <- clump_data(
+  format_data(exposure_iv, type = "exposure")
+)
+
+# 将结局数据格式化
+outcome_fmt <- format_data(outcome_dat, type = "outcome")
+
+# 根据 SNP 匹配结局效应
+outcome_matched <- subset(outcome_fmt, SNP %in% exposure_iv$SNP)
+
+# 协调等位基因方向
+dat <- harmonise_data(exposure_iv, outcome_matched)
+
+# 主分析
+mr_res <- mr(dat)
+mr_res
+
+# 敏感性分析
+het <- mr_heterogeneity(dat)
+pleio <- mr_pleiotropy_test(dat)
+steiger <- mr_steiger(dat)
+
+# 单SNP & 留一法
+single <- mr_singlesnp(dat)
+loo <- mr_leaveoneout(dat)
+
+# 可视化
+mr_scatter_plot(mr_res, dat)
+mr_leaveoneout_plot(loo)
+```
+
+数据没有beta或者se
+
+### Option B：使用 IEU OpenGWAS（推荐，标准且省心）
+
+我们可以直接用 TwoSampleMR 连接 IEU OpenGWAS，确保字段完备。
+
+![](images/屏幕截图%202025-11-24%20170939.png)
+
+![](images/屏幕截图%202025-11-24%20171038.png)
+
+![](images/屏幕截图%202025-11-24%20172749.png)
+
+### ✅ 使用 IEU OpenGWAS 的替代方案
+
+根据 IEU OpenGWAS 数据库：
+
+-   **乳腺摄影密度 (Mammographic density)** 暴露：在 IEU OpenGWAS 可搜索 “mammographic density”，有相关 GWAS 数据集。
+
+-   **抑郁 (Depression / Major Depressive Disorder)** 结局：推荐使用 `ieu-a-1187` (PGC 2018, N≈480,359)，或 `ieu-b-102` (PGC 2019 Major depression)。
+
+因此：
+
+-   暴露 ID (`ex_id`)：乳腺摄影密度相关 GWAS（例如 UK Biobank mammographic density，具体 ID 可在 OpenGWAS 搜索 “mammographic density”）。
+
+-   结局 ID (`out_id`)：`ieu-a-1187` (Major Depressive Disorder, PGC 2018)。
+
+申请api
+
+![](images/屏幕截图%202025-11-24%20171757.png)
+
+### 📌 R 代码示例
+
+```r
+
+
+
+# 1. 设置 token（只需一次）
+Sys.setenv(OPENGWAS_JWT = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImFwaS1qd3QiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhcGkub3Blbmd3YXMuaW8iLCJhdWQiOiJhcGkub3Blbmd3YXMuaW8iLCJzdWIiOiIzMTQzNTM0ODkxQHFxLmNvbSIsImlhdCI6MTc2Mzk3NTg0NywiZXhwIjoxNzY1MTg1NDQ3fQ.ZFHeL8QswhmATx4S2DTLNNXmt-b7kBdlJQWB6rY-i6E7pO0J4QkgQp1zyvyq2ktXwcijfj1VdfM4pitUY0-jlcBMpHa8hH_9_BTgaCmGqHiw2SBsJr7n69jdywpTPKNJTKDndoiWDzNLDdXKNMbgqTKO2OltnEoMTTb5pPacM2KruzIj3i6XLEKf3AyEEt4WGcZ--1g5bq1icE75eVCFzR7W234bK4aZrWs8Hw5RQSo9ixo8vYh034dQ55byaanH3ahDGgvjySv0b_V-uuw1_I7AuMz2OpGdFRqbxf3BG8Gl0GiwPJHX9evZpPqpdGZZjmY_HZO_xMc-2CPNCHghhg")
+
+library(TwoSampleMR)
+library(ieugwasr)
+
+
+
+# 2. 选择暴露和结局 GWAS ID
+ex_id <- "ukb-b-3016"   # 暴露：Years since last breast cancer screening / mammogram
+out_id <- "ieu-b-102"   # 结局：Major depression (2019, N≈500k)
+
+# 3. 提取暴露工具变量 (放宽阈值以获取更多 SNP)
+exposure_dat <- extract_instruments(outcomes = ex_id, p1 = 1e-5, clump = TRUE)
+
+# 4. 提取结局数据
+outcome_dat <- extract_outcome_data(snps = exposure_dat$SNP, outcomes = out_id)
+
+# 5. 协调数据
+dat <- harmonise_data(exposure_dat, outcome_dat)
+
+# 6. 主 MR 分析
+mr_res <- mr(dat)
+print(mr_res)
+
+# 7. 敏感性分析
+het     <- mr_heterogeneity(dat)      # 异质性
+pleio   <- mr_pleiotropy_test(dat)    # 水平多效性 (Egger 截距)
+single  <- mr_singlesnp(dat)          # 单 SNP 分析
+loo     <- mr_leaveoneout(dat)        # 留一法分析
+
+# 8. Steiger 检验 (方向性)
+dat_steiger <- steiger_filtering(dat)
+mr_res_steiger <- mr(dat_steiger)
+
+# 9. 可视化
+mr_scatter_plot(mr_res, dat)
+mr_leaveoneout_plot(loo)
+
+```
+
+## 📊 输出解释
+
+-   **mr_res**：主分析结果，包括 IVW、MR-Egger、加权中位数、加权模式。
+
+-   **het**：Cochran’s Q 检验，检测工具变量间异质性。
+
+-   **pleio**：MR-Egger 截距检验，检测水平多效性。
+
+-   **single**：每个 SNP 单独的 MR 估计。
+
+-   **loo**：留一法，逐个去掉 SNP 看结果稳定性。
+
+-   **steiger_filtering**：自动过滤掉方向错误的 SNP，保证因果方向合理。
+
+``` r
+Extracting data for 19 SNP(s) from 1 GWAS(s)
+Querying id chunk 1 of 1
+Querying variant chunk 1 of 1
+Finding proxies for 4 SNPs in outcome ieu-b-102
+Extracting data for 4 SNP(s) from 1 GWAS(s)
+Querying id chunk 1 of 1
+Querying variant chunk 1 of 1
+Harmonising Years since last breast cancer screening / mammogram || id:ukb-b-3016 (ukb-b-3016) and Major depression || id:ieu-b-102 (ieu-b-102)
+Analysing 'ukb-b-3016' on 'ieu-b-102'
+  id.exposure id.outcome                          outcome
+1  ukb-b-3016  ieu-b-102 Major depression || id:ieu-b-102
+2  ukb-b-3016  ieu-b-102 Major depression || id:ieu-b-102
+3  ukb-b-3016  ieu-b-102 Major depression || id:ieu-b-102
+4  ukb-b-3016  ieu-b-102 Major depression || id:ieu-b-102
+5  ukb-b-3016  ieu-b-102 Major depression || id:ieu-b-102
+                                                               exposure                    method nsnp
+1 Years since last breast cancer screening / mammogram || id:ukb-b-3016                  MR Egger   16
+2 Years since last breast cancer screening / mammogram || id:ukb-b-3016           Weighted median   16
+3 Years since last breast cancer screening / mammogram || id:ukb-b-3016 Inverse variance weighted   16
+4 Years since last breast cancer screening / mammogram || id:ukb-b-3016               Simple mode   16
+5 Years since last breast cancer screening / mammogram || id:ukb-b-3016             Weighted mode   16
+           b        se       pval
+1 -0.1683793 0.2608022 0.52896548
+2  0.2281449 0.1672853 0.17262832
+3  0.2779602 0.1310276 0.03388924
+4  0.3200889 0.2954508 0.29574272
+5  0.2910776 0.3029799 0.35192673
+Try adding metadata with add_metadata()
+Analysing 'ukb-b-3016' on 'ieu-b-102'
+$`ukb-b-3016.ieu-b-102`
+
+attr(,"split_type")
+[1] "data.frame"
+attr(,"split_labels")
+  id.exposure id.outcome
+1  ukb-b-3016  ieu-b-102
+$`ukb-b-3016.ieu-b-102`
+
+attr(,"split_type")
+[1] "data.frame"
+attr(,"split_labels")
+  id.exposure id.outcome
+1  ukb-b-3016  ieu-b-102
+Warning message:
+Removed 1 row containing missing values or values outside the scale range (`geom_point()`). 
+```
+
+![](plot-78.png)
+
+![](plot-79.png)
+
+## ✅ 结果解读：主分析输出
+
+跑了五种 MR 方法，结果如下：
+
+| 方法 | SNP数 | β估计值 (b) | 标准误 (se) | P值 (pval) | 解读建议 |
+|------------|------------|------------|------------|------------|------------|
+| MR Egger | 16 | -0.168 | 0.261 | 0.529 | 无统计显著性，方向为负 |
+| Weighted median | 16 | 0.228 | 0.167 | 0.173 | 无统计显著性，方向为正 |
+| Inverse variance weighted | 16 | 0.278 | 0.131 | **0.034** | ✅ 显著，方向为正 |
+| Simple mode | 16 | 0.320 | 0.295 | 0.296 | 无统计显著性 |
+| Weighted mode | 16 | 0.291 | 0.303 | 0.352 | 无统计显著性 |
+
+### 🔍 结论：
+
+-   **IVW 方法显示显著正向关联**：乳腺摄影筛查时间越晚，抑郁风险越高（或反之）。
+
+-   其他方法方向一致但不显著 → 提示结果可能稳健，但需要更多 SNP 或更强工具变量验证。
+
+-   Egger 截距未显著 → 暂无明显水平多效性。
+
+## 📊 图像解读建议
+
+生成的图包括：
+
+-   **散点图 + 回归线**：展示 SNP 效应在暴露与结局上的关系。
+
+-   **不同方法的回归线**：绿色（IVW）、粉色（加权中位数）、蓝色（简单模式）等。
+
+-   **误差条**：每个 SNP 的估计不确定性。
+
+### 看图技巧：
+
+-   回归线斜率 ≈ MR 效应估计。
+
+-   线条是否穿过原点、是否一致 → 判断方向性与稳健性。
+
+-   点是否分布均匀、是否有离群点 → 判断异质性。
+
+## 🔬 下一步探索建议
+
+### 1. 添加元信息（推荐）
+
+```r
+dat <- add_metadata(dat) 
+```
+
+``` r
+head(dat)
+          SNP effect_allele.exposure other_allele.exposure effect_allele.outcome other_allele.outcome
+1 rs114374563                      A                     C                     A                    C
+2 rs117132424                      A                     G                     A                    G
+3 rs139733045                      A                     G                     A                    G
+4 rs140523140                      T                     C                     T                    C
+5 rs140817751                      G                     A                     G                    A
+6 rs147085702                      A                     G                     A                    G
+  beta.exposure beta.outcome eaf.exposure eaf.outcome remove palindromic ambiguous id.outcome chr       pos
+1    -0.0303434       0.0027     0.024820      0.0247  FALSE       FALSE     FALSE  ieu-b-102   5  77620030
+2    -0.0253647      -0.0099     0.031538      0.0315  FALSE       FALSE     FALSE  ieu-b-102  12 125236719
+3     0.0277425      -0.0038     0.026388      0.0264  FALSE       FALSE     FALSE  ieu-b-102   3 193967442
+4    -0.0391690       0.0215     0.013546      0.0145  FALSE       FALSE     FALSE  ieu-b-102   7 106669859
+5     0.0311565       0.0211     0.023325      0.0226  FALSE       FALSE     FALSE  ieu-b-102   4  41522420
+6    -0.0362798       0.0009     0.016979      0.0171  FALSE       FALSE     FALSE  ieu-b-102   2 128593837
+  se.outcome samplesize.outcome pval.outcome                          outcome originalname.outcome
+1     0.0148                 NA     0.856400 Major depression || id:ieu-b-102     Major depression
+2     0.0127                 NA     0.434400 Major depression || id:ieu-b-102     Major depression
+3     0.0146                 NA     0.791899 Major depression || id:ieu-b-102     Major depression
+4     0.0192                 NA     0.264600 Major depression || id:ieu-b-102     Major depression
+5     0.0157                 NA     0.179400 Major depression || id:ieu-b-102     Major depression
+6     0.0177                 NA     0.960100 Major depression || id:ieu-b-102     Major depression
+        outcome.deprecated mr_keep.outcome data_source.outcome proxy.outcome target_snp.outcome
+1 Major depression ||  ||             TRUE                 igd            NA               <NA>
+2 Major depression ||  ||             TRUE                 igd            NA               <NA>
+3 Major depression ||  ||             TRUE                 igd            NA               <NA>
+4 Major depression ||  ||             TRUE                 igd            NA               <NA>
+5 Major depression ||  ||             TRUE                 igd            NA               <NA>
+6 Major depression ||  ||             TRUE                 igd            NA               <NA>
+  proxy_snp.outcome target_a1.outcome target_a2.outcome proxy_a1.outcome proxy_a2.outcome id.exposure
+1              <NA>              <NA>              <NA>             <NA>             <NA>  ukb-b-3016
+2              <NA>              <NA>              <NA>             <NA>             <NA>  ukb-b-3016
+3              <NA>              <NA>              <NA>             <NA>             <NA>  ukb-b-3016
+4              <NA>              <NA>              <NA>             <NA>             <NA>  ukb-b-3016
+5              <NA>              <NA>              <NA>             <NA>             <NA>  ukb-b-3016
+6              <NA>              <NA>              <NA>             <NA>             <NA>  ukb-b-3016
+  chr.exposure pos.exposure se.exposure pval.exposure samplesize.exposure
+1            5     77620030  0.00636852   1.89998e-06              149403
+2           12    125236719  0.00555587   5.00000e-06              149403
+3            3    193967442  0.00619890   7.59994e-06              149403
+4            7    106669859  0.00872163   7.10003e-06              149403
+5            4     41522420  0.00647844   1.50000e-06              149403
+6            2    128593837  0.00749121   1.29999e-06              149403
+                                                               exposure mr_keep.exposure pval_origin.exposure
+1 Years since last breast cancer screening / mammogram || id:ukb-b-3016             TRUE             reported
+2 Years since last breast cancer screening / mammogram || id:ukb-b-3016             TRUE             reported
+3 Years since last breast cancer screening / mammogram || id:ukb-b-3016             TRUE             reported
+4 Years since last breast cancer screening / mammogram || id:ukb-b-3016             TRUE             reported
+5 Years since last breast cancer screening / mammogram || id:ukb-b-3016             TRUE             reported
+6 Years since last breast cancer screening / mammogram || id:ukb-b-3016             TRUE             reported
+  data_source.exposure action SNP_index mr_keep ncase.exposure ncontrol.exposure units.exposure sd.exposure
+1                  igd      2         1    TRUE             NA                NA             SD          NA
+2                  igd      2         1    TRUE             NA                NA             SD          NA
+3                  igd      2         1    TRUE             NA                NA             SD          NA
+4                  igd      2         1    TRUE             NA                NA             SD          NA
+5                  igd      2         1    TRUE             NA                NA             SD          NA
+6                  igd      2         1    TRUE             NA                NA             SD          NA
+  ncase.outcome ncontrol.outcome units.outcome sd.outcome
+1        170756           329443            NA         NA
+2        170756           329443            NA         NA
+3        170756           329443            NA         NA
+4        170756           329443            NA         NA
+5        170756           329443            NA         NA
+6        170756           329443            NA         NA
+>
+```
+
+这会补充 SNP 的注释信息（基因位置、功能等），方便后续生物学解释。
+
+### 🔑 主要列说明
+
+-   **SNP**：变异的 rsID（如 rs114374563）。这是工具变量的核心标识。
+
+-   **effect_allele.exposure / other_allele.exposure**：在暴露 GWAS 中的效应等位基因和非效应等位基因。
+
+-   **effect_allele.outcome / other_allele.outcome**：在结局 GWAS 中的效应等位基因和非效应等位基因。 👉 harmonise_data 会确保方向一致（即暴露和结局的效应等位基因对应上）。
+
+-   **beta.exposure**：暴露 GWAS 中 SNP 对暴露的效应估计（效应大小）。
+
+-   **beta.outcome**：结局 GWAS 中 SNP 对结局的效应估计。
+
+-   **se.exposure / se.outcome**：标准误差。
+
+-   **pval.exposure / pval.outcome**：显著性水平。
+
+-   **eaf.exposure / eaf.outcome**：效应等位基因频率 (effect allele frequency)，用于判断等位基因方向是否可靠。
+
+-   **remove / palindromic / ambiguous**：标记 SNP 是否需要剔除：
+
+    -   `remove = TRUE` → SNP 被排除。
+
+    -   `palindromic = TRUE` → A/T 或 C/G 类型的 SNP，容易方向不明。
+
+    -   `ambiguous = TRUE` → 等位基因频率接近 0.5，方向难以确定。
+
+-   **id.exposure / id.outcome**：GWAS 数据集的 ID（这里是 `ukb-b-3016` 和 `ieu-b-102`）。
+
+-   **chr / pos**：SNP 在基因组上的染色体和位置。
+
+-   **samplesize.exposure / samplesize.outcome**：样本量（有时结局 GWAS 不提供，显示 NA）。
+
+-   **ncase.outcome / ncontrol.outcome**：结局 GWAS 的病例数和对照数（这里 MDD 有 170,756 病例和 329,443 对照）。
+
+### 🧬 数据的意义
+
+这张表就是 **MR 分析的输入数据**，每一行是一个 SNP 工具变量，包含它在暴露和结局 GWAS 中的效应估计。MR 方法（IVW、Egger 等）会用这些成对的效应值来推断因果关系。
+
+例如：
+
+-   **rs114374563** 在暴露中的效应是 -0.0303（减少暴露），在结局中的效应是 0.0027（几乎无效应，p=0.856）。
+
+-   **rs140523140** 在暴露中的效应是 -0.0392，在结局中的效应是 0.0215（p=0.265），方向相反。
+
+这些 SNP 的整体模式决定了 MR 的估计值。
+
+### 2. 留一法分析
+
+```r
+loo <- mr_leaveoneout(dat) 
+mr_leaveoneout_plot(loo) 
+```
+
+``` r
+ head(loo)
+                                                               exposure                          outcome
+1 Years since last breast cancer screening / mammogram || id:ukb-b-3016 Major depression || id:ieu-b-102
+2 Years since last breast cancer screening / mammogram || id:ukb-b-3016 Major depression || id:ieu-b-102
+3 Years since last breast cancer screening / mammogram || id:ukb-b-3016 Major depression || id:ieu-b-102
+4 Years since last breast cancer screening / mammogram || id:ukb-b-3016 Major depression || id:ieu-b-102
+5 Years since last breast cancer screening / mammogram || id:ukb-b-3016 Major depression || id:ieu-b-102
+6 Years since last breast cancer screening / mammogram || id:ukb-b-3016 Major depression || id:ieu-b-102
+  id.exposure id.outcome samplesize         SNP         b        se           p
+1  ukb-b-3016  ieu-b-102         NA rs114374563 0.3035210 0.1376926 0.027500622
+2  ukb-b-3016  ieu-b-102         NA rs117132424 0.2705601 0.1397958 0.052941834
+3  ukb-b-3016  ieu-b-102         NA rs139733045 0.3025464 0.1367940 0.026987862
+4  ukb-b-3016  ieu-b-102         NA rs140523140 0.3349488 0.1286873 0.009246291
+5  ukb-b-3016  ieu-b-102         NA rs140817751 0.2520168 0.1371197 0.066072240
+6  ukb-b-3016  ieu-b-102         NA rs147085702 0.2990391 0.1385192 0.030863541
+```
+
+查看是否某个 SNP 主导了结果。
+
+它的作用是：逐个去掉一个 SNP，再重新计算 MR 效应，看整体估计是否被某个单一 SNP 主导。
+
+### 如何解读这些列
+
+-   **SNP**：当前被去掉的 SNP。
+
+-   **b**：在去掉该 SNP 后，MR 的效应估计值。
+
+-   **se**：标准误。
+
+-   **p**：对应的显著性水平。
+
+### 从我们的结果看
+
+-   去掉 **rs140523140** 后，效应估计 b = 0.335，p ≈ 0.009 → 仍然显著。
+
+-   去掉其他 SNP（如 rs114374563、rs139733045、rs147085702），效应估计在 0.27–0.30 左右，p 值在 0.027–0.053 → 方向一致，显著性略有波动。
+
+-   整体来看，**没有某个 SNP 完全改变方向或导致效应消失**，说明结果不是由单一 SNP 主导，而是整体一致。
+
+### 3. 单 SNP 分析
+
+```r
+single <- mr_singlesnp(dat) 
+mr_forest_plot(single)
+
+```
+
+``` r
+ head(single)
+                                                               exposure                          outcome
+1 Years since last breast cancer screening / mammogram || id:ukb-b-3016 Major depression || id:ieu-b-102
+2 Years since last breast cancer screening / mammogram || id:ukb-b-3016 Major depression || id:ieu-b-102
+3 Years since last breast cancer screening / mammogram || id:ukb-b-3016 Major depression || id:ieu-b-102
+4 Years since last breast cancer screening / mammogram || id:ukb-b-3016 Major depression || id:ieu-b-102
+5 Years since last breast cancer screening / mammogram || id:ukb-b-3016 Major depression || id:ieu-b-102
+6 Years since last breast cancer screening / mammogram || id:ukb-b-3016 Major depression || id:ieu-b-102
+  id.exposure id.outcome samplesize         SNP           b        se         p
+1  ukb-b-3016  ieu-b-102         NA rs114374563 -0.08898146 0.4877502 0.8552434
+2  ukb-b-3016  ieu-b-102         NA rs117132424  0.39030621 0.5006958 0.4356690
+3  ukb-b-3016  ieu-b-102         NA rs139733045 -0.13697396 0.5262684 0.7946524
+4  ukb-b-3016  ieu-b-102         NA rs140523140 -0.54890347 0.4901836 0.2628026
+5  ukb-b-3016  ieu-b-102         NA rs140817751  0.67722626 0.5039077 0.1789649
+6  ukb-b-3016  ieu-b-102         NA rs147085702 -0.02480719 0.4878748 0.9594471
+```
+
+评估每个 SNP 的独立效应。
+
+### 🔑 列解释
+
+-   **SNP**：具体的遗传变异 (rsID)。
+
+-   **b**：该 SNP 的 Wald ratio 效应估计（暴露 → 结局）。
+
+-   **se**：标准误。
+
+-   **p**：显著性水平。
+
+### 📊 结果解读
+
+-   **rs114374563**：效应 b = -0.089，p = 0.855 → 无显著性。
+
+-   **rs117132424**：效应 b = 0.390，p = 0.436 → 无显著性。
+
+-   **rs139733045**：效应 b = -0.137，p = 0.795 → 无显著性。
+
+-   **rs140523140**：效应 b = -0.549，p = 0.263 → 无显著性。
+
+-   **rs140817751**：效应 b = 0.677，p = 0.179 → 接近显著，但仍不强。
+
+-   **rs147085702**：效应 b = -0.025，p = 0.959 → 无显著性。
+
+👉 结论：**单个 SNP 的 Wald ratio 都不显著**，说明没有单一强效工具变量。MR 的因果信号是由多个 SNP 的累积效应贡献的，而不是某一个 SNP 主导。
+
+![](plot-81.png)
+
+### 4. 异质性检验
+
+```r
+mr_heterogeneity(dat) 
+```
+
+``` r
+ mr_heterogeneity(dat) 
+  id.exposure id.outcome                          outcome
+1  ukb-b-3016  ieu-b-102 Major depression || id:ieu-b-102
+2  ukb-b-3016  ieu-b-102 Major depression || id:ieu-b-102
+                                                               exposure                    method        Q
+1 Years since last breast cancer screening / mammogram || id:ukb-b-3016                  MR Egger 12.82946
+2 Years since last breast cancer screening / mammogram || id:ukb-b-3016 Inverse variance weighted 16.62229
+  Q_df    Q_pval
+1   14 0.5399942
+2   15 0.3419407
+```
+
+如果 Q 值显著，说明 SNP 效应不一致 → 可考虑加权中位数或模式方法。
+
+跑出的 **异质性检验 (mr_heterogeneity)** 结果显示：
+
+| 方法     | Q     | df  | Q_pval | 解读   |
+|----------|-------|-----|--------|--------|
+| MR Egger | 12.83 | 14  | 0.54   | 不显著 |
+| IVW      | 16.62 | 15  | 0.34   | 不显著 |
+
+### 🔎 如何理解
+
+-   **Cochran’s Q 检验**用来检测各 SNP 的效应是否一致。
+
+-   **p 值 \> 0.05** → 没有显著异质性，说明各 SNP 的效应方向和大小总体一致。
+
+-   如果 **p 值显著**，说明 SNP 效应不一致，可能存在多效性或工具变量质量问题，此时更稳健的方法是 **加权中位数**或**模式方法**。
+
+### ✅ 结果说明
+
+-   目前 **IVW 和 Egger 的 Q 检验都不显著** → 没有强烈的异质性证据。
+
+-   这意味着我们的 MR 结果（IVW 显著，其他方法方向一致）是相对稳健的。
+
+-   不需要强制切换到加权中位数或模式方法，但可以作为敏感性分析报告。
+
+### 5. Steiger 检验（方向性）
+
+```r
+dat_steiger <- steiger_filtering(dat) 
+mr(dat_steiger) 
+```
+
+``` r
+dat_steiger <- steiger_filtering(dat) 
++ mr(dat_steiger) 
+Try adding metadata with add_metadata()
+Analysing 'ukb-b-3016' on 'ieu-b-102'
+  id.exposure id.outcome                          outcome
+1  ukb-b-3016  ieu-b-102 Major depression || id:ieu-b-102
+2  ukb-b-3016  ieu-b-102 Major depression || id:ieu-b-102
+3  ukb-b-3016  ieu-b-102 Major depression || id:ieu-b-102
+4  ukb-b-3016  ieu-b-102 Major depression || id:ieu-b-102
+5  ukb-b-3016  ieu-b-102 Major depression || id:ieu-b-102
+                                                               exposure                    method nsnp
+1 Years since last breast cancer screening / mammogram || id:ukb-b-3016                  MR Egger   16
+2 Years since last breast cancer screening / mammogram || id:ukb-b-3016           Weighted median   16
+3 Years since last breast cancer screening / mammogram || id:ukb-b-3016 Inverse variance weighted   16
+4 Years since last breast cancer screening / mammogram || id:ukb-b-3016               Simple mode   16
+5 Years since last breast cancer screening / mammogram || id:ukb-b-3016             Weighted mode   16
+           b        se       pval
+1 -0.1683793 0.2608022 0.52896548
+2  0.2281449 0.1653765 0.16772570
+3  0.2779602 0.1310276 0.03388924
+4  0.3200889 0.3003106 0.30334344
+5  0.2910776 0.3172043 0.37332968
+```
+
+确认因果方向是否从暴露 → 结局。
+
+### 🔎 结果解读
+
+-   我们得到的 `mr(dat_steiger)` 输出和之前的结果几乎一致：
+
+    -   **IVW**：b ≈ 0.278，se ≈ 0.131，p ≈ 0.034 → 仍然显著。
+
+    -   **Weighted median**：b ≈ 0.228，p ≈ 0.168 → 不显著，但方向一致。
+
+    -   **MR-Egger**：b ≈ -0.168，p ≈ 0.529 → 不显著。
+
+    -   **Mode 方法**：方向一致，但不显著。
+
+👉 说明：在 Steiger 检验后，保留下来的 16 个 SNP 都符合因果方向假设（暴露解释的方差 \> 结局解释的方差）。因此，整体 MR 结果支持 **暴露 → 结局** 的方向，而不是反过来。steiger_res \<- steiger_filtering(dat, verbose = TRUE) head(steiger_res)

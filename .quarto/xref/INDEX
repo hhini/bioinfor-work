@@ -1,0 +1,36 @@
+{
+  "index.qmd": {
+    "index.docx": "95f28f4c"
+  },
+  "python.qmd": {
+    "python.docx": "cd4675e6"
+  },
+  "test1.qmd": {
+    "test1.docx": "5a0e926d"
+  },
+  "qq.qmd": {
+    "qq.docx": "569ae312"
+  },
+  "gwas.qmd": {
+    "gwas.docx": "2f73914d",
+    "gwas.html": "ac3f8b46"
+  },
+  "1.qmd": {
+    "1.docx": "28106431"
+  },
+  "2.qmd": {
+    "2.docx": "a4d8e7da"
+  },
+  "3.qmd": {
+    "3.docx": "1877aa65"
+  },
+  "yushen.qmd": {
+    "yushen.docx": "87e4e708"
+  },
+  "gwaswork.qmd": {
+    "gwaswork.docx": "5d369562"
+  },
+  "alast.qmd": {
+    "alast.docx": "0ff24eab"
+  }
+}

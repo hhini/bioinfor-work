@@ -1,0 +1,520 @@
+查看的是 **ASAH1** 基因（N-acylsphingosine amidohydrolase 1），在 gnomAD v4.1.0 数据集中。以下是该基因的主要信息：
+
+### 🧬 基因概况
+
+-   **Ensembl 基因 ID**：ENSG00000104763.20
+
+-   **基因组位置**：染色体 8，区间 18055992–18084998（GRCh38/hg38）
+
+-   **主要转录本（MANE Select）**：ENST00000637790.2 / NM_177924.5
+
+-   **功能**：编码酸性神经酰胺酶（acid ceramidase），参与鞘脂代谢，影响细胞凋亡和信号传导。
+
+### 📊 变异约束指标（Constraint Metrics）
+
+| 类型                 | 预期 SNVs | 实际 SNVs | Z-score | o/e（观察/预期） | pLI |
+|----------------------|-----------|-----------|---------|------------------|-----|
+| 同义突变             | 140.9     | 179       | -1.75   | 1.27 (1.12–1.44) | —   |
+| 错义突变             | 391.8     | 545       | -2.83   | 1.39 (1.3–1.49)  | —   |
+| 严重丢失功能（pLoF） | 45.6      | 52        | —       | 1.14 (0.91–1.44) | 0   |
+
+这些指标说明该基因对突变的耐受性较高，pLI 值为 0 表示对丢失功能突变不敏感。
+
+### 🧪 ClinVar 临床变异（截至 2025年8月31日）
+
+-   总计收录变异：853 个
+
+-   可筛选类别包括：
+
+    -   致病 / 可能致病
+
+    -   意义不明确 / 有冲突
+
+    -   良性 / 可能良性
+
+-   可按突变类型筛选：pLoF、错义、同义、Inframe indel 等
+
+### 🧬 gnomAD 变异数据
+
+-   收录变异数：4322 个
+
+-   仅显示靠近编码外显子的变异（±75bp）
+
+-   每个变异都附有 HGVS 注释、VEP 注释、等位基因频率、纯合子数等信息
+
+```{python}
+import pandas as pd
+
+# 读取 gnomAD CSV
+df = pd.read_csv(r"E:\acode\homwwork\data\gnomAD_v4.1.0_ENSG00000120054_2025_12_03_15_08_57.csv")
+```
+
+查看数据并且转换我们需要的格式
+
+```{python}
+print(df.head())
+print(df.columns)
+```
+
+``` python
+df = pd.read_csv(r"E:\acode\homwwork\data\gnomAD_v4.1.0_ENSG00000120054_2025_12_03_15_08_57.csv")
+>>> print(df.head())
+... print(df.columns)
+           gnomAD ID  ...  Hemizygote Count Remaining
+0   10-100042357-G-C  ...                           0
+1   10-100042358-A-G  ...                           0
+2   10-100042360-A-C  ...                           0
+3  10-100042361-GA-G  ...                           0
+4   10-100042363-A-T  ...                           0
+
+[5 rows x 72 columns]
+Index(['gnomAD ID', 'Chromosome', 'Position', 'rsIDs', 'Reference', 'Alternate',
+       'Source', 'Filters - exomes', 'Filters - genomes', 'Transcript',
+       'HGVS Consequence', 'Protein Consequence', 'Transcript Consequence',
+       'VEP Annotation', 'ClinVar Germline Classification',
+       'ClinVar Variation ID', 'Flags', 'Allele Count', 'Allele Number',
+       'Allele Frequency', 'Homozygote Count', 'Hemizygote Count',
+       'Filters - joint', 'GroupMax FAF group', 'GroupMax FAF frequency',
+       'cadd', 'revel_max', 'spliceai_ds_max', 'pangolin_largest_ds', 'phylop',
+       'sift_max', 'polyphen_max', 'Allele Count African/African American',
+       'Allele Number African/African American',
+       'Homozygote Count African/African American',
+       'Hemizygote Count African/African American',
+       'Allele Count Admixed American', 'Allele Number Admixed American',
+       'Homozygote Count Admixed American', 'Hemizygote Count Admixed American',
+       'Allele Count Ashkenazi Jewish', 'Allele Number Ashkenazi Jewish',
+       'Homozygote Count Ashkenazi Jewish', 'Hemizygote Count Ashkenazi Jewish',
+       'Allele Count East Asian', 'Allele Number East Asian',
+       'Homozygote Count East Asian', 'Hemizygote Count East Asian',
+       'Allele Count European (Finnish)', 'Allele Number European (Finnish)',
+       'Homozygote Count European (Finnish)',
+       'Hemizygote Count European (Finnish)', 'Allele Count Middle Eastern',
+       'Allele Number Middle Eastern', 'Homozygote Count Middle Eastern',
+       'Hemizygote Count Middle Eastern', 'Allele Count European (non-Finnish)',
+       'Allele Number European (non-Finnish)',
+       'Homozygote Count European (non-Finnish)',
+       'Hemizygote Count European (non-Finnish)', 'Allele Count Amish',
+       'Allele Number Amish', 'Homozygote Count Amish',
+       'Hemizygote Count Amish', 'Allele Count South Asian',
+       'Allele Number South Asian', 'Homozygote Count South Asian',
+       'Hemizygote Count South Asian', 'Allele Count Remaining',
+       'Allele Number Remaining', 'Homozygote Count Remaining',
+       'Hemizygote Count Remaining'],
+      dtype='object')
+```
+
+将 gnomAD 的 CSV 文件转换为 ANNOVAR 所需的 `.avinput` 格式，需要提取以下五列并进行适当处理：
+
+-   `Chromosome` → 转换为 `chr` 格式（例如 `21` → `chr5`）
+
+-   `Position` → 用作 `start` 和 `end`（单核苷酸变异）
+
+-   `Reference` → 原始碱基
+
+-   `Alternate` → 替代碱基
+
+### ✅ 示例 Python 脚本（适用于 SNV 和简单 indel）
+
+```{python}
+import pandas as pd
+
+# 读取 CSV 文件
+df = pd.read_csv(r"E:\acode\homwwork\data\gnomAD_v4.1.0_ENSG00000120054_2025_12_03_15_08_57.csv")
+
+# 构建 ANNOVAR 所需列
+def format_chr(chrom):
+    return f"chr{chrom}"
+
+def get_end(pos, ref):
+    return pos + len(ref) - 1
+
+annovar_df = pd.DataFrame({
+    'chr': df['Chromosome'].apply(format_chr),
+    'start': df['Position'],
+    'end': df.apply(lambda row: get_end(row['Position'], str(row['Reference'])), axis=1),
+    'ref': df['Reference'],
+    'alt': df['Alternate']
+})
+
+# 保存为 .avinput 文件
+annovar_df.to_csv(r"E:\acode\homwwork\data\gnomAD_CPN1.avinput", sep='\t', index=False, header=False)
+```
+
+得到
+
+``` python
+>>> print(annovar_df.head)
+<bound method NDFrame.head of         chr      start        end ref alt
+0     chr10  100042357  100042357   G   C
+1     chr10  100042358  100042358   A   G
+2     chr10  100042360  100042360   A   C
+3     chr10  100042361  100042362  GA   G
+4     chr10  100042363  100042363   A   T
+...     ...        ...        ...  ..  ..
+1832  chr10  100081694  100081694   C   T
+1833  chr10  100081696  100081696   C   G
+1834  chr10  100081696  100081696   C   T
+1835  chr10  100081697  100081697   G   T
+1836  chr10  100081697  100081697   G   A
+
+[1837 rows x 5 columns]>
+
+### ✅ 下载与准备数据库：快速检查清单
+
+| 数据库 | 文件数量 | 是否必须 | 用途 |
+|------------------|------------------|------------------|------------------|
+| **dbNSFP v4.2a** | 2（主文件 + 索引） | ✅ | 提供多个功能预测工具（SIFT、PolyPhen2、MetaSVM等） |
+| **ClinVar 20240611** | 2（主文件 + 索引） | ✅ | 致病性注释，用于筛选临床相关变异 |
+| **refGene** | 3（注释 + mRNA + 版本） | ✅ | 基因结构注释，用于定位变异位置 |
+
+### 🧠 实用建议与注意事项
+
+#### 1. **文件路径与权限**
+
+-   确保 `humandb/` 目录有写权限，避免 `annotate_variation.pl` 下载失败。
+
+-   下载后使用 `ls -lh` 检查文件大小是否完整（如 dbNSFP 应约 40GB）。
+
+#### 2. **解压顺序与命令**
+
+#### 3. **版本匹配**
+
+-   确保你的 ANNOVAR 是最新版，支持 `dbnsfp42a` 和 `clinvar_20240611`。
+
+-   可运行 `./annotate_variation.pl -version` 检查版本。
+
+## 注释
+
+### ✅ ANNOVAR 注释命令
+
+``` bash
+perl /mnt/e/acode/homwwork/data/annovar.latest/annovar/table_annovar.pl \
+  /mnt/e/acode/homwwork/data/gnomAD_CPN1.avinput \
+  /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb/ \
+  -buildver hg38 \
+  -out /mnt/e/acode/homwwork/data/gnomAD_CPN1_anno \
+  -remove \
+  -protocol refGene,dbnsfp42a,clinvar_20240611 \
+  -operation g,f,f \
+  -nastring . \
+  -polish \
+  -xref /mnt/e/acode/homwwork/data/annovar.latest/annovar/example/gene_fullxref.txt
+```
+
+``` bash
+jayz@localhost:/mnt/e/acode/homwwork$ perl /mnt/e/acode/homwwork/data/annovar.latest/annovar/table_annovar.pl \
+  /mnt/e/acode/homwwork/data/gnomAD_CPN1.avinput \
+  /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb/ \    
+  -buildver hg38 \
+  -out /mnt/e/acode/homwwork/data/gnomAD_CPN1_anno \
+  -remove \
+  -protocol refGene,dbnsfp42a,clinvar_20240611 \
+  -operation g,f,f \
+  -nastring . \
+  -polish \
+  -xref /mnt/e/acode/homwwork/data/annovar.latest/annovar/example/gene_fullxref.txt
+-----------------------------------------------------------------
+NOTICE: Processing operation=g protocol=refGene
+
+NOTICE: Running with system command <annotate_variation.pl -geneanno -buildver hg38 -dbtype refGene -outfile /mnt/e/acode/homwwork/data/gnomAD_CPN1_anno.refGene -exonsort -nofirstcodondel /mnt/e/acode/homwwork/data/gnomAD_CPN1.avinput /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb/>
+NOTICE: Output files are written to /mnt/e/acode/homwwork/data/gnomAD_CPN1_anno.refGene.variant_function, /mnt/e/acode/homwwork/data/gnomAD_CPN1_anno.refGene.exonic_variant_function
+NOTICE: Reading gene annotation from /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb/hg38_refGene.txt ... Done with 88819 transcripts (including 21511 without coding sequence annotation) for 28307 unique genes
+NOTICE: Processing next batch with 1837 unique variants in 1837 input lines
+NOTICE: Reading FASTA sequences from /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb/hg38_refGeneMrna.fa ... Done with 1 sequences
+WARNING: A total of 606 sequences will be ignored due to lack of correct ORF annotation
+
+NOTICE: Running with system command <coding_change.pl  /mnt/e/acode/homwwork/data/gnomAD_CPN1_anno.refGene.exonic_variant_function.orig /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb//hg38_refGene.txt /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb//hg38_refGeneMrna.fa -alltranscript -out /mnt/e/acode/homwwork/data/gnomAD_CPN1_anno.refGene.fa -newevf /mnt/e/acode/homwwork/data/gnomAD_CPN1_anno.refGene.exonic_variant_function>
+-----------------------------------------------------------------
+NOTICE: Processing operation=f protocol=dbnsfp42a
+NOTICE: Finished reading 107 column headers for '-dbtype dbnsfp42a'
+
+NOTICE: Running system command <annotate_variation.pl -filter -dbtype dbnsfp42a -buildver hg38 -outfile /mnt/e/acode/homwwork/data/gnomAD_CPN1_anno /mnt/e/acode/homwwork/data/gnomAD_CPN1.avinput /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb/ -otherinfo>
+NOTICE: Output file with variants matching filtering criteria is written to /mnt/e/acode/homwwork/data/gnomAD_CPN1_anno.hg38_dbnsfp42a_dropped, and output file with other variants is written to /mnt/e/acode/homwwork/data/gnomAD_CPN1_anno.hg38_dbnsfp42a_filtered   
+NOTICE: Processing next batch with 1837 unique variants in 1837 input lines
+NOTICE: Database index loaded. Total number of bins is 556674 and the number of bins to be scanned is 21
+NOTICE: Scanning filter database /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb/hg38_dbnsfp42a.txt...Done
+-----------------------------------------------------------------
+NOTICE: Processing operation=f protocol=clinvar_20240611
+NOTICE: Finished reading 5 column headers for '-dbtype clinvar_20240611'
+
+NOTICE: Running system command <annotate_variation.pl -filter -dbtype clinvar_20240611 -buildver hg38 -outfile /mnt/e/acode/homwwork/data/gnomAD_CPN1_anno /mnt/e/acode/homwwork/data/gnomAD_CPN1.avinput /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb/ -otherinfo>
+NOTICE: the --dbtype clinvar_20240611 is assumed to be in generic ANNOVAR database format
+NOTICE: Output file with variants matching filtering criteria is written to /mnt/e/acode/homwwork/data/gnomAD_CPN1_anno.hg38_clinvar_20240611_dropped, and output file with other variants is written to /mnt/e/acode/homwwork/data/gnomAD_CPN1_anno.hg38_clinvar_20240611_filtered
+NOTICE: Processing next batch with 1837 unique variants in 1837 input lines
+NOTICE: Database index loaded. Total number of bins is 171655 and the number of bins to be scanned is 7
+NOTICE: Scanning filter database /mnt/e/acode/homwwork/data/annovar.latest/annovar/humandb/hg38_clinvar_20240611.txt...Done
+-----------------------------------------------------------------
+NOTICE: Multianno output file is written to /mnt/e/acode/homwwork/data/gnomAD_CPN1_anno.hg38_multianno.txt
+```
+
+## 结果分析与筛选
+
+列名
+
+``` bash
+head -n 1 gnomAD_CPN1_anno.hg38_multianno.txt | tr '\t' '\n' | nl
+```
+
+得到
+
+``` bash
+jayz@localhost:/mnt/e/acode/homwwork/data$ head -n 1 gnomAD_CPN1_anno.hg38_multianno.txt | tr '\t' '\n' | nl
+     1  Chr
+     2  Start
+     3  End
+     4  Ref
+     5  Alt
+     6  Func.refGene
+     7  Gene.refGene
+     8  GeneDetail.refGene
+     9  ExonicFunc.refGene
+    10  AAChange.refGene
+    11  SIFT_score
+    12  SIFT_converted_rankscore
+    13  SIFT_pred
+    14  SIFT4G_score
+    15  SIFT4G_converted_rankscore
+    16  SIFT4G_pred
+    17  Polyphen2_HDIV_score
+    18  Polyphen2_HDIV_rankscore
+    19  Polyphen2_HDIV_pred
+    20  Polyphen2_HVAR_score
+    21  Polyphen2_HVAR_rankscore
+    22  Polyphen2_HVAR_pred
+    23  LRT_score
+    24  LRT_converted_rankscore
+    25  LRT_pred
+    26  MutationTaster_score
+    27  MutationTaster_converted_rankscore
+    28  MutationTaster_pred
+    29  MutationAssessor_score
+    30  MutationAssessor_rankscore
+    31  MutationAssessor_pred
+    32  FATHMM_score
+    33  FATHMM_converted_rankscore
+    34  FATHMM_pred
+    35  PROVEAN_score
+    36  PROVEAN_converted_rankscore
+    37  PROVEAN_pred
+    38  VEST4_score
+    39  VEST4_rankscore
+    40  MetaSVM_score
+    41  MetaSVM_rankscore
+    42  MetaSVM_pred
+    43  MetaLR_score
+    44  MetaLR_rankscore
+    45  MetaLR_pred
+    46  MetaRNN_score
+    47  MetaRNN_rankscore
+    48  MetaRNN_pred
+    49  M-CAP_score
+    50  M-CAP_rankscore
+    51  M-CAP_pred
+    52  REVEL_score
+    53  REVEL_rankscore
+    54  MutPred_score
+    55  MutPred_rankscore
+    56  MVP_score
+    57  MVP_rankscore
+    58  MPC_score
+    59  MPC_rankscore
+    60  PrimateAI_score
+    61  PrimateAI_rankscore
+    62  PrimateAI_pred
+    63  DEOGEN2_score
+    64  DEOGEN2_rankscore
+    65  DEOGEN2_pred
+    66  BayesDel_addAF_score
+    67  BayesDel_addAF_rankscore
+    68  BayesDel_addAF_pred
+    69  BayesDel_noAF_score
+    70  BayesDel_noAF_rankscore
+    71  BayesDel_noAF_pred
+    72  ClinPred_score
+    73  ClinPred_rankscore
+    74  ClinPred_pred
+    75  LIST-S2_score
+    76  LIST-S2_rankscore
+    77  LIST-S2_pred
+    78  Aloft_pred
+    79  Aloft_Confidence
+    80  CADD_raw
+    81  CADD_raw_rankscore
+    82  CADD_phred
+    83  DANN_score
+    84  DANN_rankscore
+    85  fathmm-MKL_coding_score
+    86  fathmm-MKL_coding_rankscore
+    87  fathmm-MKL_coding_pred
+    88  fathmm-XF_coding_score
+    89  fathmm-XF_coding_rankscore
+    90  fathmm-XF_coding_pred
+    91  Eigen-raw_coding
+    92  Eigen-raw_coding_rankscore
+    93  Eigen-PC-raw_coding
+    94  Eigen-PC-raw_coding_rankscore
+    95  GenoCanyon_score
+    96  GenoCanyon_rankscore
+    97  integrated_fitCons_score
+    98  integrated_fitCons_rankscore
+    99  integrated_confidence_value
+   100  LINSIGHT
+   101  LINSIGHT_rankscore
+   102  GERP++_NR
+   103  GERP++_RS
+   104  GERP++_RS_rankscore
+   105  phyloP100way_vertebrate
+   106  phyloP100way_vertebrate_rankscore
+   107  phyloP30way_mammalian
+   108  phyloP30way_mammalian_rankscore
+   109  phastCons100way_vertebrate
+   110  phastCons100way_vertebrate_rankscore
+   111  phastCons30way_mammalian
+   112  phastCons30way_mammalian_rankscore
+   113  SiPhy_29way_logOdds
+   114  SiPhy_29way_logOdds_rankscore
+   115  Interpro_domain
+   116  GTEx_V8_gene
+   117  GTEx_V8_tissue
+   118  CLNALLELEID
+   119  CLNDN
+   120  CLNDISDB
+   121  CLNREVSTAT
+   122  CLNSIG
+```
+
+### 🧬 LoF 变异类型详解（字段：`ExonicFunc.refGene`）
+
+| 类型 | 详细说明 |
+|------------------------------------|------------------------------------|
+| `stopgain` | 在编码区引入一个**提前终止密码子**（如 UAG、UAA、UGA），使翻译在中途停止，导致蛋白质**截短**。这种截短可能使蛋白失去关键结构域或功能位点，常见于致病突变。 |
+| `frameshift_deletion` | 删除的碱基数不是 3 的倍数，导致**阅读框移位**。移位后的密码子序列完全改变，通常会引入提前终止密码子，生成异常蛋白或触发**NMD（无义介导的 mRNA 降解）**。 |
+| `frameshift_insertion` | 插入的碱基数不是 3 的倍数，同样导致**阅读框改变**。后续氨基酸序列被重写，功能丧失风险极高。 |
+| `splicing` | 影响**剪接位点**（如 GT-AG 边界），可能导致外显子跳过、错配或内含子保留。结果可能是**蛋白结构异常**或功能域缺失，尤其当剪接错误影响关键区域时。 |
+| `stoploss` | 删除原本的**终止密码子**，使翻译继续进行，导致蛋白**延长**。延长部分可能干扰蛋白折叠、定位或功能，甚至引入毒性序列。 |
+| `startloss` | 删除或突变起始密码子（通常是 ATG），可能阻止翻译启动。若没有替代起始位点，蛋白将**无法表达**，直接导致功能缺失。 |
+
+``` bash
+jayz@localhost:/mnt/e/acode/homwwork/data$ awk -F'\t' '$9 ~ /stopgain|frameshift_deletion|frameshift_insertion|splicing|stoploss|startloss/' gnomAD_CPN1_anno.hg38_multianno.txt > CPN1_LOF.txt
+
+
+jyz@localhost:/mnt/e/acode/homwwork/data$ head ASAH1_LOF.txt
+chr8    18057526        18057534        ACGTGTGCT       A       exonic    ASAH1   .       stoploss        ASAH1:NM_001127505:exon14:c.1170_1178delinsT:p.*390delinsCLAYRMRPLRHEDTISM*,ASAH1:NM_001363743:exon14:c.993_1001delinsT:p.*331delinsCLAYRMRPLRHEDTISM*,ASAH1:NM_004315:exon14:c.1236_1244delinsT:p.*412delinsCLAYRMRPLRHEDTISM*,ASAH1:NM_177924:exon14:c.1188_1196delinsT:p.*396delinsCLAYRMRPLRHEDTISM*  .       .       .       .       .       .       .       ...       .       .       .       .       .       .       .       ...       .       .       .       .       .       .       .       ...       .       .       .       .       .       .       .       ...       .       .       .       .       .       .       .       ...       .       .       .       .       .       .       .       ...       .       .       .       .       .       .       .       ...       .       .       .       .       .       .       .       ...       .       .       .       .       .       .       .       ...       .       .       .       .       .       .       .       ...       .       .       .       .       .       .       .       ...       .       .
+chr8    18057537        18057537        C       T       exonic  ASAH1     .       stopgain        ASAH1:NM_001127505:exon14:c.G1167A:p.W389X,ASAH1:NM_001363743:exon14:c.G990A:p.W330X,ASAH1:NM_004315:exon14:c.G1233A:p.W411X,ASAH1:NM_177924:exon14:c.G1185A:p.W395X ..       .       .       .       .       .       .       .       ...       0.000   0.843   D       0.988   0.444   D       .       ...       .       .       .       .       .       0.672   0.680   ...       .       .       .       .       .       .       .       ...       .       .       .       .       .       .       .       ...       .       .       .       0.620   0.983   D       0.653   0.983     D       .       .       .       .       .       .       .;.;.;Recessive;.;.;.;.;.;.;.;.;.;.;      .;.;.;High;.;.;.;.;.;.;.;.;.;.;   9.399   0.998   49      0.994   0.648   0.995   0.968   D0.182    0.310   N       0.925   0.929   0.801   0.898   1.000   0.748     0.706   0.612   0       .       .       5.42    5.42    0.787     7.292   0.781   1.026   0.459   1.000   0.716   0.423   0.260     19.194  0.937   .;.;.;.;.;.;.;.;.;.;.;.;.;.     .       ...       .       .       .
+chr8    18057570        18057570        G       C       exonic  ASAH1     .       stopgain        ASAH1:NM_001127505:exon14:c.C1134G:p.Y378X,ASAH1:NM_001363743:exon14:c.C957G:p.Y319X,ASAH1:NM_004315:exon14:c.C1200G:p.Y400X,ASAH1:NM_177924:exon14:c.C1152G:p.Y384X ..       .       .       .       .       .       .       .       ...       0.000   0.477   D       1       0.810   D       .       ...       .       .       .       .       .       0.755   0.754   ...       .       .       .       .       .       .       .       ...       .       .       .       .       .       .       .       ...       .       .       .       0.595   0.975   D       0.617   0.975     D       .       .       .       .       .       .       .;.;.;Recessive;.;.;.;.;.;.;.;.;.;.;      .;.;.;High;.;.;.;.;.;.;.;.;.;.;   8.770   0.996   45      0.997   0.818   0.962   0.679   D0.254    0.373   N       0.583   0.721   0.412   0.623   0.212   0.183     0.706   0.612   0       .       .       5.53    4.65    0.576     1.385   0.340   1.176   0.789   1.000   0.716   0.142   0.207     14.226  0.654   Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.       ...       .       .       .       .
+chr8    18057612        18057612        G       C       exonic  ASAH1     .       stopgain        ASAH1:NM_001127505:exon14:c.C1092G:p.Y364X,ASAH1:NM_001363743:exon14:c.C915G:p.Y305X,ASAH1:NM_004315:exon14:c.C1158G:p.Y386X,ASAH1:NM_177924:exon14:c.C1110G:p.Y370X ..       .       .       .       .       .       .       .       ...       0.031   0.252   N       1       0.810   D       .       ...       .       .       .       .       .       0.764   0.762   ...       .       .       .       .       .       .       .       ...       .       .       .       .       .       .       .       ...       .       .       .       0.625   0.994   D       0.66    0.994     D       .       .       .       .       .       .       .;.;.;Recessive;.;.;.;.;.;.;.;.;.;.;      .;.;.;High;.;.;.;.;.;.;.;.;.;.;   8.165   0.990   41      0.996   0.734   0.959   0.667   D0.178    0.306   N       0.537   0.693   0.351   0.586   0.040   0.144     0.706   0.612   0       .       .       5.54    3.75    0.422     2.594   0.459   0.227   0.253   1.000   0.716   0.856   0.355     5.148   0.143   Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.       ...       .       .       .       .
+chr8    18059346        18059346        G       A       exonic  ASAH1     .       stopgain        ASAH1:NM_001127505:exon12:c.C1018T:p.Q340X,ASAH1:NM_001363743:exon12:c.C841T:p.Q281X,ASAH1:NM_004315:exon12:c.C1084T:p.Q362X,ASAH1:NM_177924:exon12:c.C1036T:p.Q346X ..       .       .       .       .       .       .       .       ...       0.000   0.843   D       1       0.810   A       .       ...       .       .       .       .       .       0.977   0.988   ...       .       .       .       .       .       .       .       ...       .       .       .       .       .       .       .       ...       .       .       .       0.625   0.994   D       0.66    0.994     D       .       .       .       .       .       .       .;.;.;Recessive;.;.;.;.;.;.;.;.;.;.;      .;.;.;High;.;.;.;.;.;.;.;.;.;.;   9.253   0.998   48      0.997   0.793   0.986   0.841   D0.318    0.422   N       1.052   0.971   0.865   0.939   1.000   0.748     0.732   0.924   0       .       .       5.53    5.53    0.825     9.270   0.949   1.176   0.789   1.000   0.716   0.008   0.112     19.449  0.949   Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.       ...       .       .       .       .
+chr8    18059419        18059419        A       T       exonic  ASAH1     .       stopgain        ASAH1:NM_001127505:exon12:c.T945A:p.Y315X,ASAH1:NM_001363743:exon12:c.T768A:p.Y256X,ASAH1:NM_004315:exon12:c.T1011A:p.Y337X,ASAH1:NM_177924:exon12:c.T963A:p.Y321X  ...       .       .       .       .       .       .       .       ..0.000   0.843   D       1       0.810   A       .       .       ...       .       .       .       .       0.882   0.880   .       ...       .       .       .       .       .       .       .       ...       .       .       .       .       .       .       .       ...       .       .       0.625   0.994   D       0.66    0.994   D..       .       .       .       .       .;.;.;Recessive;.;.;.;.;.;.;.;.;.;.;      .;.;.;High;.;.;.;.;.;.;.;.;.;.; 7.008   0.971   370.996   0.724   0.790   0.391   D       0.275   0.390   N       0.385     0.606   0.184   0.490   0.108   0.166   0.732   0.924   0..       5.53    -0.727  0.106   0.195   0.170   -0.399  0.063   0.954     0.333   0.811   0.339   10.883  0.462   Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;. .       .       .       .       .       .       . 
+chr8    18059440        18059440        C       T       exonic  ASAH1     .       stopgain        ASAH1:NM_001127505:exon12:c.G924A:p.W308X,ASAH1:NM_001363743:exon12:c.G747A:p.W249X,ASAH1:NM_004315:exon12:c.G990A:p.W330X,ASAH1:NM_177924:exon12:c.G942A:p.W314X   ...       .       .       .       .       .       .       .       ..0.000   0.843   D       1       0.810   A       .       .       ...       .       .       .       .       0.973   0.984   .       ...       .       .       .       .       .       .       .       ...       .       .       .       .       .       .       .       ...       .       .       0.625   0.994   D       0.66    0.994   D..       .       .       .       .       .;.;.;Recessive;.;.;.;.;.;.;.;.;.;.;      .;.;.;High;.;.;.;.;.;.;.;.;.;.; 8.558   0.994   430.996   0.749   0.976   0.757   D       0.180   0.307   N       0.964     0.945   0.852   0.931   1.000   0.748   0.732   0.924   0..       5.53    5.53    0.825   7.312   0.783   1.026   0.459   1.000     0.716   0.983   0.487   19.449  0.949   Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;. .       .       .       .       .       .       . 
+chr8    18059451        18059451        G       A       exonic  ASAH1     .       stopgain        ASAH1:NM_001127505:exon12:c.C913T:p.Q305X,ASAH1:NM_001363743:exon12:c.C736T:p.Q246X,ASAH1:NM_004315:exon12:c.C979T:p.Q327X,ASAH1:NM_177924:exon12:c.C931T:p.Q311X   ...       .       .       .       .       .       .       .       ..0.640   0.106   N       1       0.810   A       .       .       ...       .       .       .       .       0.963   0.973   .       ...       .       .       .       .       .       .       .       ...       .       .       .       .       .       .       .       ...       .       .       0.625   0.994   D       0.66    0.994   D..       .       .       .       .       .;.;.;Recessive;.;.;.;.;.;.;.;.;.;.;      .;.;.;High;.;.;.;.;.;.;.;.;.;.; 6.921   0.970   360.961   0.287   0.075   0.136   N       0.068   0.135   N       -0.145    0.354   -0.458  0.233   0.131   0.171   0.732   0.924   0..       5.53    1.62    0.228   0.047   0.139   -0.163  0.105   0.002     0.153   0.036   0.159   4.515   0.113   Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;. .       .       1929705 not_provided    MedGen:C3661900   criteria_provided,_single_submitter     Pathogenic        
+chr8    18059591        18059591        C       A       exonic  ASAH1     .       stopgain        ASAH1:NM_001127505:exon11:c.G880T:p.E294X,ASAH1:NM_001363743:exon11:c.G703T:p.E235X,ASAH1:NM_004315:exon11:c.G946T:p.E316X,ASAH1:NM_177924:exon11:c.G898T:p.E300X   ...       .       .       .       .       .       .       .       ..0.634   0.058   N       1       0.810   A       .       .       ...       .       .       .       .       0.919   0.922   .       ...       .       .       .       .       .       .       .       ...       .       .       .       .       .       .       .       ...       .       .       0.625   0.994   D       0.66    0.994   D..       .       .       .       .       .;.;.;Recessive;.;.;.;.;.;.;.;.;.;.;.;.;  .;.;.;High;.;.;.;.;.;.;.;.;.;.;.;.;     7.122   0.973     37      0.986   0.437   0.085   0.144   N       0.067   0.132     N       -0.027  0.406   -0.335  0.270   0.111   0.167   0.732     0.924   0       .       .       5.11    0.948   0.187   0.460     0.216   -0.810  0.032   0.007   0.177   0.807   0.337   3.617     0.076   Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal..       .       .       .       .       .
+chr8    18059603        18059603        G       A       exonic  ASAH1     .       stopgain        ASAH1:NM_001127505:exon11:c.C868T:p.R290X,ASAH1:NM_001363743:exon11:c.C691T:p.R231X,ASAH1:NM_004315:exon11:c.C934T:p.R312X,ASAH1:NM_177924:exon11:c.C886T:p.R296X   ...       .       .       .       .       .       .       .       ..0.000   0.629   D       1       0.810   A       .       .       ...       .       .       .       .       0.976   0.987   .       ...       .       .       .       .       .       .       .       ...       .       .       .       .       .       .       .       ...       .       .       0.625   0.994   D       0.66    0.994   D..       .       .       .       .       .;.;.;Recessive;.;.;.;.;.;.;.;.;.;.;.;.;  .;.;.;High;.;.;.;.;.;.;.;.;.;.;.;.;     8.099   0.989     41      0.997   0.836   0.970   0.719   D       0.165   0.291     N       0.674   0.779   0.509   0.686   0.469   0.207   0.732     0.924   0       .       .       5.11    3.25    0.364   2.644     0.463   1.176   0.789   1.000   0.716   0.987   0.506   13.738    0.623   Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal..       800721  not_provided|Spinal_muscular_atrophy-progressive_myoclonic_epilepsy_syndrome      MedGen:C3661900|MONDO:MONDO:0008045,MedGen:C1834569,OMIM:159950,Orphanet:2590     criteria_provided,_multiple_submitters,_no_conflicts      Pathogenic
+```
+
+### 🧬 示例变异解读
+
+#### 1. **stoploss 变异**
+
+代码
+
+```         
+chr8    18057526    ACGTGTGCT → A    stoploss 注释：p.*396delinsCLAYRMRPLRHEDTISM* 
+```
+
+-   **影响**：原本的终止密码子被删除并插入新的氨基酸序列，导致蛋白延长。
+
+-   **潜在后果**：
+
+    -   延长的蛋白可能干扰正常折叠或功能。
+
+    -   新增序列可能引入毒性或错误定位信号。
+
+#### 2. **stopgain 变异**
+
+代码
+
+```         
+chr8    18057537    C → T    stopgain 注释：p.W395X 
+```
+
+-   **影响**：将 TGG（编码色氨酸）变为终止密码子（如 TAG），导致蛋白提前终止。
+
+-   **潜在后果**：
+
+    -   截短蛋白可能缺失关键功能域。
+
+    -   如果截短位置靠前，可能触发 NMD（无义介导的 mRNA 降解）。
+
+#### 3. **另一个 stopgain**
+
+代码
+
+```         
+chr8    18057570    G → C    stopgain 注释：p.Y384X 
+```
+
+-   **影响**：酪氨酸（Y）变为终止密码子，蛋白在第 384 位提前终止。
+
+-   **临床提示**：
+
+    -   该变异在多个转录本中出现，提示其可能具有广泛影响。
+
+    -   频率较低（如 0.000），可能是罕见致病突变。
+
+## ✅ ClinVar 致病性筛选
+
+文件中包含 ClinVar 注释字段（如 `CLNSIG`），可筛选 `Pathogenic` 或 `Likely_pathogenic`。
+
+``` bash
+jayz@localhost:/mnt/e/acode/homwwork/data$ head ASAH1_ClinVar_pathogenic.txt
+chr8    18058834        18058834        C       A       splicing        ASAH1   NM_001363743:exon13:c.903+1G>T,NM_004315:exon13:c.1146+1G>T,NM_001127505:exon13:c.1080+1G>T,NM_177924:exon13:c.1098+1G>T        .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       1       0.810   D       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       0.507   0.945   D       0.660.994   D       .       .       .       .       .       .       .;.;.;.;.;.;.;.;.;.;.;.;.;.;.;      .;.;.;.;.;.;.;.;.;.;.;.;.;.;.;  5.397   0.943   34      0.996   0.721   0.990   0.902       D       .       .       .       1.193   0.995   1.049   0.994   1.000   0.748   0.322       0.056   0       0.986   0.935   5.49    5.49    0.810   7.327   0.784   1.026   0.459       1.000   0.716   1.000   0.863   19.362  0.944   .;.;.;.;.;.;.;.;.;.;.;.;.;.;.   .  .800747  not_provided|Farber_lipogranulomatosis  MedGen:C3661900|MONDO:MONDO:0009218,MedGen:C0268255,OMIM:228000,Orphanet:333        criteria_provided,_multiple_submitters,_no_conflictsPathogenic/Likely_pathogenic
+chr8    18058848        18058848        G       C       exonic  ASAH1   .       nonsynonymous SNV   ASAH1:NM_001127505:exon13:c.C1067G:p.P356R,ASAH1:NM_001363743:exon13:c.C890G:p.P297R,ASAH1:NM_004315:exon13:c.C1133G:p.P378R,ASAH1:NM_177924:exon13:c.C1085G:p.P362R        0.001       0.785   D       0.003   0.794   D       1.0     0.906   D       0.998   0.886   D  0.000    0.843   D       1       0.810   D       3.305   0.905   M       -1.21   0.786   T  -7.14    0.941   D       0.977   0.991   0.687   0.930   D       0.742   0.912   D       0.976       0.974   D       0.195   0.864   D       0.919   0.980   0.903   0.979   0.987   0.987       0.011   0.010   0.623   0.561   T       0.933   0.989   D       0.439   0.920   D  0.393    0.919   D       0.998   0.940   D       0.961   0.896   D       .;.;.;.;.;.;.;.;.;.;.;.;.;.;        .;.;.;.;.;.;.;.;.;.;.;.;.;.;    4.342   0.891   29.9    0.998   0.907   0.994       0.952   D       0.938   0.936   D       1.056   0.972   0.987   0.984   1.000   0.748       0.732   0.924   0       .       .       5.49    5.49    0.810   9.291   0.951   1.176       0.789   1.000   0.716   1.000   0.863   19.362  0.944   Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;. .       .       800715  not_provided|Farber_lipogranulomatosis  MedGen:C3661900|MONDO:MONDO:0009218,MedGen:C0268255,OMIM:228000,Orphanet:333        criteria_provided,_multiple_submitters,_no_conflicts        Pathogenic/Likely_pathogenic
+chr8    18059385        18059385        G       C       exonic  ASAH1   .       nonsynonymous SNV   ASAH1:NM_001127505:exon12:c.C979G:p.R327G,ASAH1:NM_001363743:exon12:c.C802G:p.R268G,ASAH1:NM_004315:exon12:c.C1045G:p.R349G,ASAH1:NM_177924:exon12:c.C997G:p.R333G  0.0     0.913       D       0.0     0.928   D       1.0     0.906   D       1.0     0.974   D       0.000       0.843   D       1       0.810   D       3.35    0.911   M       -1.32   0.798   T  -6.24    0.905   D       0.933   0.957   0.699   0.932   D       0.755   0.916   D       0.958       0.952   D       0.390   0.932   D       0.947   0.990   0.885   0.971   0.976   0.975       0.006   0.005   0.449   0.319   T       0.946   0.992   D       0.209   0.748   D  0.379    0.914   D       0.951   0.634   D       0.975   0.963   D       .;.;.;.;.;.;.;.;.;.;.;.;.;.;        .;.;.;.;.;.;.;.;.;.;.;.;.;.;    4.261   0.872   29.2    0.999   0.964   0.961       0.675   D       0.867   0.786   D       0.930   0.932   0.844   0.926   1.000   0.418       0.732   0.924   0       .       .       5.53    5.53    0.825   6.013   0.704   1.176       0.789   1.000   0.716   0.449   0.265   13.093  0.586   Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;. .       .       577056  not_provided|Farber_lipogranulomatosis|Abnormality_of_metabolism/homeostasis        MedGen:C3661900|MONDO:MONDO:0009218,MedGen:C0268255,OMIM:228000,Orphanet:333|Human_Phenotype_Ontology:HP:0001939,Human_Phenotype_Ontology:HP:0002146,MedGen:C4021768    criteria_provided,_multiple_submitters,_no_conflicts    Pathogenic/Likely_pathogenic
+chr8    18059451        18059451        G       A       exonic  ASAH1   .       stopgain   ASAH1:NM_001127505:exon12:c.C913T:p.Q305X,ASAH1:NM_001363743:exon12:c.C736T:p.Q246X,ASAH1:NM_004315:exon12:c.C979T:p.Q327X,ASAH1:NM_177924:exon12:c.C931T:p.Q311X    .       .       .  ..       .       .       .       .       .       .       .       0.640   0.106   N       1  0.810    A       .       .       .       .       .       .       .       .       .       0.963       0.973   .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       0.625   0.994   D       0.66    0.994   D       .       .       .       .  ..       .;.;.;Recessive;.;.;.;.;.;.;.;.;.;.;    .;.;.;High;.;.;.;.;.;.;.;.;.;.; 6.921   0.970       36      0.961   0.287   0.075   0.136   N       0.068   0.135   N       -0.145  0.354       -0.458  0.233   0.131   0.171   0.732   0.924   0       .       .       5.53    1.620.228   0.047   0.139   -0.163  0.105   0.002   0.153   0.036   0.159   4.515   0.113   Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;. .       .       1929705 not_provided    MedGen:C3661900 criteria_provided,_single_submitter Pathogenic
+chr8    18059466        18059466        T       C       splicing        ASAH1   NM_001363743:exon12:c.723-2A>G,NM_004315:exon12:c.966-2A>G,NM_001127505:exon12:c.900-2A>G,NM_177924:exon12:c.918-2A>G   .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       1       0.810   D       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       0.625   0.994   D       0.66    0.994       D       .       .       .       .       .       .       .;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;    4.975   0.932   33      0.993   0.595   0.993   0.938   D  ..       .       1.015   0.962   0.831   0.919   1.000   0.748   0.106   0.028   0       0.961       0.659   5.53    5.53    0.825   7.414   0.793   1.138   0.647   1.000   0.716   0.471       0.268   15.641  0.768   .;.;.;.;.;.;.;.;.;.;.;.;.;.     .       .       940898  not_provided        MedGen:C3661900 criteria_provided,_single_submitter     Pathogenic
+chr8    18059603        18059603        G       A       exonic  ASAH1   .       stopgain   ASAH1:NM_001127505:exon11:c.C868T:p.R290X,ASAH1:NM_001363743:exon11:c.C691T:p.R231X,ASAH1:NM_004315:exon11:c.C934T:p.R312X,ASAH1:NM_177924:exon11:c.C886T:p.R296X    .       .       .  ..       .       .       .       .       .       .       .       0.000   0.629   D       1  0.810    A       .       .       .       .       .       .       .       .       .       0.976       0.987   .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       0.625   0.994   D       0.66    0.994   D       .       .       .       .  ..       .;.;.;Recessive;.;.;.;.;.;.;.;.;.;.;.;.;        .;.;.;High;.;.;.;.;.;.;.;.;.;.;.;.;8.099    0.989   41      0.997   0.836   0.970   0.719   D       0.165   0.291   N       0.674       0.779   0.509   0.686   0.469   0.207   0.732   0.924   0       .       .       5.113.25    0.364   2.644   0.463   1.176   0.789   1.000   0.716   0.987   0.506   13.738  0.623       Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal       .       .       800721  not_provided|Spinal_muscular_atrophy-progressive_myoclonic_epilepsy_syndrome        MedGen:C3661900|MONDO:MONDO:0008045,MedGen:C1834569,OMIM:159950,Orphanet:2590       criteria_provided,_multiple_submitters,_no_conflicts        Pathogenic
+chr8    18059639        18059639        C       A       exonic  ASAH1   .       stopgain   ASAH1:NM_001127505:exon11:c.G832T:p.G278X,ASAH1:NM_001363743:exon11:c.G655T:p.G219X,ASAH1:NM_004315:exon11:c.G898T:p.G300X,ASAH1:NM_177924:exon11:c.G850T:p.G284X    .       .       .  ..       .       .       .       .       .       .       .       0.000   0.843   D       1  0.810    A       .       .       .       .       .       .       .       .       .       0.977       0.988   .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       0.625   0.994   D       0.66    0.994   D       .       .       .       .  ..       .;.;.;Recessive;.;.;.;.;.;.;.;.;.;.;.;.;        .;.;.;High;.;.;.;.;.;.;.;.;.;.;.;.;8.497    0.993   43      0.994   0.637   0.982   0.806   D       0.222   0.346   N       1.178       0.993   1.025   0.991   1.000   0.748   0.732   0.924   0       .       .       5.115.11    0.692   7.388   0.791   1.026   0.459   1.000   0.716   1.000   0.863   18.714  0.916       Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal       .       .       178804  Spinal_muscular_atrophy-progressive_myoclonic_epilepsy_syndrome     MONDO:MONDO:0008045,MedGen:C1834569,OMIM:159950,Orphanet:2590       no_assertion_criteria_provided  Pathogenic
+chr8    18061402        18061402        T       C       exonic  ASAH1   .       nonsynonymous SNV   ASAH1:NM_001127505:exon10:c.A742G:p.R248G,ASAH1:NM_001363743:exon10:c.A565G:p.R189G,ASAH1:NM_004315:exon10:c.A808G:p.R270G,ASAH1:NM_177924:exon10:c.A760G:p.R254G   0.0     0.913       D       0.005   0.722   D       1.0     0.906   D       0.999   0.924   D       0.000       0.843   D       1       0.810   D       3.39    0.916   M       -1.29   0.795   T  -6.63    0.922   D       0.987   0.998   0.574   0.915   D       0.735   0.909   D       0.989       0.994   D       0.356   0.924   D       0.842   0.951   0.99    0.999   0.888   0.887       0.010   0.009   0.469   0.346   T       0.958   0.994   D       0.400   0.899   D  0.337    0.898   D       0.998   0.940   D       0.979   0.928   D       .;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;    .;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;        3.766   0.712   25.7    0.998   0.875       0.828   0.420   D       0.627   0.610   D       0.511   0.677   0.365   0.594   0.999       0.395   0.732   0.924   0       .       .       5.48    2.98    0.336   2.401   0.442       0.142   0.199   0.996   0.394   0.995   0.577   12.474  0.551   Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal   .       .       800724  not_provided|Farber_lipogranulomatosis  MedGen:C3661900|MONDO:MONDO:0009218,MedGen:C0268255,OMIM:228000,Orphanet:333        criteria_provided,_multiple_submitters,_no_conflicts        Pathogenic
+chr8    18061418        18061418        C       T       exonic  ASAH1   .       stopgain   ASAH1:NM_001127505:exon10:c.G726A:p.W242X,ASAH1:NM_001363743:exon10:c.G549A:p.W183X,ASAH1:NM_004315:exon10:c.G792A:p.W264X,ASAH1:NM_177924:exon10:c.G744A:p.W248X    .       .       .  ..       .       .       .       .       .       .       .       0.000   0.843   D       1  0.810    A       .       .       .       .       .       .       .       .       .       0.997       1.000   .       .       .       .       .       .       .       .       .       .  ..       .       .       .       .       .       .       .       .       .       .       .  ..       .       0.625   0.994   D       0.66    0.994   D       .       .       .       .  ..       .;.;.;Recessive;.;.;.;.;.;.;.;.;.;.;.;.;        .;.;.;High;.;.;.;.;.;.;.;.;.;.;.;.;9.027    0.997   47      0.997   0.779   0.949   0.628   D       0.222   0.346   N       0.947       0.939   0.828   0.917   1.000   0.748   0.732   0.924   0       .       .       5.245.24    0.729   7.358   0.787   1.026   0.459   1.000   0.716   0.998   0.659   18.817  0.920       Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal       .       .       2862975 not_provided    MedGen:C3661900     criteria_provided,_single_submitter     Pathogenic
+chr8    18062409        18062409        T       A       exonic  ASAH1   .       nonsynonymous SNV   ASAH1:NM_001127505:exon8:c.A500T:p.N167I,ASAH1:NM_001363743:exon8:c.A323T:p.N108I,ASAH1:NM_004315:exon8:c.A566T:p.N189I,ASAH1:NM_177924:exon8:c.A518T:p.N173I       0.096   0.341       T       0.104   0.794   T       0.955   0.578   P       0.775   0.600   P       0.000       0.843   D       1       0.810   D       2.985   0.856   M       -1.17   0.782   T  -7.02    0.939   D       0.864   0.887   0.274   0.871   D       0.600   0.858   D       0.874       0.867   D       0.209   0.872   D       0.728   0.906   0.653   0.791   0.943   0.943       0.009   0.008   0.578   0.498   T       0.844   0.964   D       0.246   0.782   D  0.115    0.779   D       0.983   0.751   D       0.948   0.802   D       .;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;        .;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;    3.703   0.694   25.4    0.986       0.440   0.980   0.786   D       0.927   0.910   D       0.691   0.790   0.666   0.798       1.000   0.748   0.732   0.924   0       .       .       5.32    5.32    0.754   7.670       0.829   1.046   0.516   1.000   0.716   0.876   0.364   15.254  0.733   Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;Choloylglycine hydrolase/NAAA C-terminal;.        .       .       800730  Farber_lipogranulomatosis|Spinal_muscular_atrophy-progressive_myoclonic_epilepsy_syndrome   MONDO:MONDO:0009218,MedGen:C0268255,OMIM:228000,Orphanet:333|MONDO:MONDO:0008045,MedGen:C1834569,OMIM:159950,Orphanet:2590      criteria_provided,_single_submitter     Pathogenic
+```
+
+已经成功提取出 ASAH1 基因中被 ClinVar 标注为 “Pathogenic” 或 “Likely pathogenic” 的变异，下面解析这些变异的关键特征，并提供后续分析建议。
+
+### 🧬 ClinVar 致病变异示例解读
+
+#### 1. **剪接位点变异（splicing）**
+
+代码
+
+```         
+位置：chr8:18058834 C>A 注释：c.903+1G>T（多个转录本） 功能注释：splicing ClinVar注释：Pathogenic/Likely_pathogenic 关联疾病：Farber lipogranulomatosis 
+```
+
+-   **影响**：+1 位点是剪接供体位点的核心，突变极可能导致外显子跳过或异常剪接。
+
+-   **临床意义**：多个数据库（OMIM、MONDO、Orphanet）支持其与 Farber 病相关。
+
+#### 2. **错义突变（nonsynonymous SNV）**
+
+代码
+
+```         
+位置：chr8:18058848 G>C 注释：p.P356R（多个转录本） 功能注释：nonsynonymous SNV ClinVar注释：Pathogenic/Likely_pathogenic 
+```
+
+-   **影响**：脯氨酸（P）变为精氨酸（R），可能影响蛋白折叠或功能。
+
+-   **支持证据**：多个预测工具（如 PolyPhen、SIFT）可能标注为“D”（deleterious）或“P”（possibly damaging）。
+
+#### 3. **错义突变（nonsynonymous SNV）**
+
+代码
+
+```         
+位置：chr8:18059385 G>C 注释：p.R327G（多个转录本） 功能注释：nonsynonymous SNV ClinVar注释：Pathogenic/Likely_pathogenic 关联表型：代谢/稳态异常（HP:0001939, HP:0002146） 
+```
+
+-   **影响**：精氨酸（R）变为甘氨酸（G），可能破坏正电荷或结构稳定性。
+
+-   **临床关联**：与 Farber 病及代谢异常表型相关。
